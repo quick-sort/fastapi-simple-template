@@ -64,3 +64,18 @@ disable=
     C0114, # missing-module-docstring
     C0115, # missing-class-docstring
 ```
+
+
+#### Alembic
+
+To init a new db
+```bash
+poetry run alembic upgrade head
+
+```
+
+To generate a new revision
+
+```bash
+poetry run alembic revision --autogenerate -m "Added New table"
+```
