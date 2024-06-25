@@ -2,11 +2,16 @@ FastAPI Simple Template
 ========================
 
 ### Dependencies:
-- **[Python3.12](https://docs.python.org/3/whatsnew/3.12.html)**: Based on 3.12 release information, The asyncio package has had a number of performance improvements, with some benchmarks showing a **75% speed up**.
-- **[Poetry](https://python-poetry.org/)**: A great python virtual environment management tool
-- **[Async SQLAlchemy](https://docs.sqlalchemy.org/en/20/orm/extensions/asyncio.html)**: Popular and stable DB ORM framework to manage db models 
-- **[Alembic](https://alembic.sqlalchemy.org/en/latest/)**: DB model migration management tool
-- **[Pytest Asyncio](https://docs.pytest.org/en/8.2.x/)**: Unit test framework, coverage, asyncio support alread installed
+#### Production Deployment
+- **[Python3.12](https://docs.python.org/3/whatsnew/3.12.html)** is the latest stabe version. Based on the release information, The asyncio package has had a number of performance improvements, with some benchmarks showing a **75% speed up**.
+- **[Poetry](https://python-poetry.org/)** is a great python virtual environment management tool.
+- **[Async SQLAlchemy](https://docs.sqlalchemy.org/en/20/orm/extensions/asyncio.html)** is a popular and stable DB ORM framework to manage db models.
+- **[Alembic](https://alembic.sqlalchemy.org/en/latest/)** is a db model migration management tool, working with sqlalchemy.
+
+#### Development
+- **[Pytest](https://docs.pytest.org/en/8.2.x/)** is a unit test framework. Coverage, asyncio extention has alread been installed.
+- **[Pylint](https://pylint.readthedocs.io/en/stable/)** is a static code analyser. Can make suggestions about how the code could be refactored.
+- **[Mkdocs Material](https://squidfunk.github.io/mkdocs-material/)** generates clean and good looking document like FastAPI documents.
 
 ### How to install Python 3.12
 ```bash
@@ -30,4 +35,32 @@ poetry config virtualenvs.in-project true
 poetry env use 3.12
 poetry lock --no-upgrade
 poetry install --no-root
+```
+
+### Document Generation
+
+use 
+```bash
+mkdocs 
+```
+
+### Development related 
+
+#### Unit Test
+configuration of pytest is inside pyproject.toml, section \[tool.pytest.ini_options\]
+```bash
+poetry run pytest
+```
+
+#### Pylint
+
+```bash
+poetry run pylint app
+```
+
+To disable certain lint warning, edit .pylintrc, add lines to `disable`
+```txt
+disable=
+    C0114, # missing-module-docstring
+    C0115, # missing-class-docstring
 ```
