@@ -1,16 +1,23 @@
 from fastapi import APIRouter, Depends, HTTPException, Response
 from typing import Optional, Annotated
 from sqlalchemy.ext.asyncio import AsyncSession
+from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from app.db import models
 from .. import schema
 
 router = APIRouter()
 
-@router.post('/login')
+@router.post('/token')
 async def login(
-) -> schema.LoginResponse:
-    user = {}
-    token = ''
-    if not user:
+    form_data: Annotated[OAuth2PasswordRequestForm, Depends()]
+) -> schema.TokenResponse:
+    access_token = ''
+    if not access_token:
         raise HTTPException(400)
-    return schema.LoginResponse(user_id=user.id, user_token=token)
+    return schema.TokenResponse(access_token=access_token, token_type='bearer')
+
+@router.get('/login/{provider}')
+async def login_with_provider(
+    provider: str,
+):
+    pass
