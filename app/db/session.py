@@ -22,3 +22,4 @@ ASYNC_SCOPED_SESSION:AsyncSession = async_scoped_session(
     ASYNC_ENGINE_FACTORY,
     scopefunc=asyncio.current_task,
 )
+

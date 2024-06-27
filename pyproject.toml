@@ -12,7 +12,10 @@ SQLAlchemy = {extras = ["asyncio"], version = "^2.0.31"}
 alembic = "^1.13.1"
 fastapi = "^0.111.0"
 pydantic-settings = "^2.3.4"
-passlib = "^1.7.4"
+passlib = {extras = ["bcrypt"], version = "^1.7.4"}
+email-validator = "^2.2.0"
+pyjwt = "^2.8.0"
+bcrypt = "4.0.1"
 
 
 [tool.poetry.group.dev.dependencies]
