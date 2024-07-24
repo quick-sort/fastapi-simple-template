@@ -67,7 +67,10 @@ disable=
 
 
 #### Alembic
-
+To init alembic.ini
+```bash
+poetry run alembic init --template async app/db/migrations
+```
 To init a new db
 ```bash
 poetry run alembic upgrade head
