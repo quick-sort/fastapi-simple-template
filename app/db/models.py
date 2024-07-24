@@ -18,6 +18,7 @@ class Base(AsyncAttrs, DeclarativeBase):
     
     id:Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     created_at:Mapped[datetime.datetime] = mapped_column(DateTime, default=func.now())
+    updated_at:Mapped[datetime.datetime] = mapped_column(DateTime, default=func.now(), onupdate=func.now())
 
     def to_dict(self):
         dict_ = {}
