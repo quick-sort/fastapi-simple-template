@@ -25,7 +25,7 @@ class Settings(BaseSettings):
 settings = Settings()
 
 logging.basicConfig(
-    format='%(levelname)s:%(asctime)s - %(pathname)s:%(lineno)d:%(funcName)s %(message)s',
+    format='%(levelname)s:%(asctime)s - %(filename)s:%(lineno)d:%(funcName)s %(message)s',
     encoding='utf-8',
     level=getattr(logging, settings.LOG_LEVEL.upper())
 )
