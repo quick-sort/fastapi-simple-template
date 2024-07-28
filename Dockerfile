@@ -2,8 +2,8 @@ from python:3.12-alpine
 WORKDIR /app
 ENV PYTHONPATH=/app
 
-RUN apt update && \
-    apt install -y build-essential curl &&\
+RUN apk update && \
+    apk add build-base curl && \
     pip install poetry
 
 ADD . /app
