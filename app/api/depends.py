@@ -1,4 +1,5 @@
 from typing import Annotated, AsyncGenerator
+import logging
 from jwt.exceptions import InvalidTokenError
 from fastapi import Depends, status, HTTPException
 from fastapi.security import OAuth2PasswordBearer, SecurityScopes
@@ -10,6 +11,7 @@ from app.db.models import User
 from app.config import settings
 from app.utils.security import decode_jwt_token
 
+logger = logging.getLogger(__name__)
 get_oauth_token = OAuth2PasswordBearer(tokenUrl="/auth/token")
 
 async def get_current_user(
@@ -29,7 +31,7 @@ async def get_current_user(
     payload = decode_jwt_token(token)
     if not payload or payload.get('user_id'):
         raise credentials_exception
-    
+
     token_scopes = payload.get("scopes", [])
     for scope in security_scopes.scopes:
         if scope not in token_scopes:
@@ -50,7 +52,8 @@ async def get_db_session() -> AsyncGenerator[AsyncSession, None]:
     async_session = ASYNC_SCOPED_SESSION()
     try:
         yield async_session
-    except Exception as e:
+    except Exception:
+        logger.exception('error in processing request')
         await async_session.rollback()
     finally:
         await ASYNC_SCOPED_SESSION.remove()

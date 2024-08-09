@@ -15,16 +15,15 @@ class Base(AsyncAttrs, DeclarativeBase):
     def __tablename__(cls) -> str:
         # Replace 'Base' with the name of your base class
         return TABLE_NAME_PATTERN.sub('_', cls.__name__).lower() + 's'
-    
+
     id:Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     created_at:Mapped[datetime.datetime] = mapped_column(DateTime, default=func.now())
     updated_at:Mapped[datetime.datetime] = mapped_column(DateTime, default=func.now(), onupdate=func.now())
 
-    def to_dict(self):
-        dict_ = {}
-        for key in self.__mapper__.c.keys():
-            dict_[key] = getattr(self, key)
-        return dict_
+    def update(self, **kwargs):
+        for key, value in kwargs.items():
+            setattr(self, key, value)
+
 
 class IntEnumType(enum.IntEnum):
     done = 0
