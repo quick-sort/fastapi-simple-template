@@ -3,7 +3,7 @@ import jwt
 from fastapi import APIRouter, Depends, HTTPException, Response, status
 from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi.security import OAuth2PasswordRequestForm
-from app.db import models
+from app.db.models import User
 from app.config import settings
 from app.utils.security import generate_jwt_token
 from .. import schema

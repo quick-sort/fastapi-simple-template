@@ -24,20 +24,8 @@ class Base(AsyncAttrs, DeclarativeBase):
         for key, value in kwargs.items():
             setattr(self, key, value)
 
-    def to_dict(self):
-        dict_ = {}
-        for key in self.__mapper__.c.keys():
-            dict_[key] = getattr(self, key)
-        return dict_
-
 class IntEnumType(enum.IntEnum):
     done = 0
 
 class StrEnumType(enum.StrEnum):
     done = 'done'
-
-class User(Base):
-    username:Mapped[str] = mapped_column(String, unique=True)
-    email:Mapped[str] = mapped_column(String, unique=True)
-    email_verified:Mapped[bool] = mapped_column(Boolean)
-    password:Mapped[str] = mapped_column(String, nullable=False)
