@@ -1,9 +1,8 @@
 from fastapi import FastAPI
 
 def config_middlewares(app: FastAPI):
-    from starlette.middleware import Middleware
-    from .auth import AuthMiddleware
-    app.add_middleware(Middleware(AuthMiddleware, bypass=['/api/users/registry', '/api/auth/login']))
+    from .auth import add_middlewares
+    add_middlewares(app)
 
 __all__ = [
     'config_middlewares'

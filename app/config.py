@@ -5,7 +5,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 from pydantic import PostgresDsn
 
 logger = logging.getLogger(__name__)
-env_file = os.getenv('ELASTIC_SPIDER_ENV_FILE', '.env')
+env_file = os.getenv('CONFIG_ENV_FILE', '.env')
 
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(
@@ -13,11 +13,12 @@ class Settings(BaseSettings):
         validate_default=False,
     )
     ENV: str = 'dev'
+    LOG_LEVEL: Literal['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL'] = 'INFO'
 
     ## JWT TOKEN CONFIG
     JWT_SECRET_KEY: str
     JWT_ALGORITHM: Literal['HS256'] = "HS256"
-    JWT_EXPIRE_MINUTES: int = 30
+    JWT_EXPIRE_MINUTES: int = 60
 
     ## DB CONFIG
     SQLALCHEMY_URI: PostgresDsn = 'postgresql+asyncpg://postgres:postgres@localhost:5432/app'
