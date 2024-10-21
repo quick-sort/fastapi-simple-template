@@ -15,7 +15,7 @@ FastAPI Simple Template
 
 ### How to start the project
 ```bash
-
+poetry run uvicorn app.main:app
 ```
 
 ## Setup Dependencies
