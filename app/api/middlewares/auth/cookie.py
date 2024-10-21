@@ -11,20 +11,13 @@ from .auth_user import SimpleUser
 import logging
 logger = logging.getLogger(__name__)
     
-class TokenAuthBackend(AuthenticationBackend):
+class CookieAuthBackend(AuthenticationBackend):
     async def authenticate(self, conn):
-        if "Authorization" not in conn.headers:
+        token = conn.cookies.get(settings.SESSION_COOKIE_NAME)
+        if not token:
             return
 
-        auth = conn.headers["Authorization"]
-        try:
-            scheme, token = auth.split()
-            if scheme.lower() != 'bearer':
-                return
-            payload = decode_jwt_token(token)
-        except Exception:
-            raise AuthenticationError('Invalid credentials')
-        logger.info(payload)
+        payload = decode_jwt_token(token)
         if not payload or not payload.get('user_id'):
             raise AuthenticationError('Invalid credentials')
         user_id = payload.get('user_id')
@@ -35,4 +28,4 @@ class TokenAuthBackend(AuthenticationBackend):
         return AuthCredentials([user.role]), SimpleUser(user.id)
 
 def add_middleware(app: FastAPI) -> None:
-    app.add_middleware(AuthenticationMiddleware, backend=TokenAuthBackend())
+    app.add_middleware(AuthenticationMiddleware, backend=CookieAuthBackend())

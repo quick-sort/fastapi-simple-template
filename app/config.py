@@ -19,6 +19,7 @@ class Settings(BaseSettings):
     JWT_SECRET_KEY: str
     JWT_ALGORITHM: Literal['HS256'] = "HS256"
     JWT_EXPIRE_MINUTES: int = 60
+    SESSION_COOKIE_NAME: str = 'session'
 
     ## DB CONFIG
     SQLALCHEMY_URI: PostgresDsn = 'postgresql+asyncpg://postgres:postgres@localhost:5432/app'

@@ -1,7 +1,7 @@
 from fastapi import FastAPI
-
+from app.config import settings
 def add_middlewares(app: FastAPI):
-    from .basic import add_middleware
+    from .cookie import add_middleware
     add_middleware(app)
 
 

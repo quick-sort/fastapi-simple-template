@@ -26,7 +26,7 @@ class Controller(Generic[T]):
         return result.all()
     
     async def get_by_id(self, id:int) -> T:
-        await self.session.get(self.model, id)
+        return await self.session.get(self.model, id)
 
     async def delete(self, obj:T):
         await self.session.delete(obj)

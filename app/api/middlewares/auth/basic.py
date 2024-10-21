@@ -3,10 +3,12 @@ import binascii
 from fastapi import FastAPI
 from starlette.middleware import Middleware
 from starlette.authentication import (
-    AuthCredentials, AuthenticationBackend, AuthenticationError, SimpleUser
+    AuthCredentials, AuthenticationBackend, AuthenticationError, BaseUser
 )
 from starlette.middleware.authentication import AuthenticationMiddleware
-
+from app.controllers.user import UserController
+from .auth_user import SimpleUser
+    
 class BasicAuthBackend(AuthenticationBackend):
     async def authenticate(self, conn):
         if "Authorization" not in conn.headers:
@@ -19,12 +21,18 @@ class BasicAuthBackend(AuthenticationBackend):
                 return
             decoded = base64.b64decode(credentials).decode("ascii")
         except (ValueError, UnicodeDecodeError, binascii.Error) as exc:
-            raise AuthenticationError('Invalid basic auth credentials')
+            raise AuthenticationError('Invalid credentials')
 
         username, _, password = decoded.partition(":")
-        
-        # TODO: You'd want to verify the username and password here.
-        return AuthCredentials(["authenticated"]), SimpleUser(username)
+        controller = UserController(autocommit=True)
+        user = await controller.find(username=username)
+        if not user:
+            raise AuthenticationError('Invalid credentials')
+        user = user[0]
+        verified = await user.verify_password(password=password)
+        if not verified:
+            raise AuthenticationError('Invalid credentials')
+        return AuthCredentials([user.role]), SimpleUser(user.id)
 
 def add_middleware(app: FastAPI) -> None:
-    app.add_middleware(Middleware(AuthenticationMiddleware, backend=BasicAuthBackend()))
+    app.add_middleware(AuthenticationMiddleware, backend=BasicAuthBackend())

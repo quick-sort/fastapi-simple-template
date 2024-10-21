@@ -10,6 +10,10 @@ class TokenResponse(BaseModel):
     access_token: str
     token_type: Literal['Bearer']
 
+class LoginParams(BaseModel):
+    username: str
+    password: str
+
 class CreateUserParams(BaseModel):
     username: str
     email: EmailStr

@@ -13,6 +13,12 @@ FastAPI Simple Template
 - **[Pylint](https://pylint.readthedocs.io/en/stable/)** is a static code analyser. Can make suggestions about how the code could be refactored.
 - **[Mkdocs Material](https://squidfunk.github.io/mkdocs-material/)** generates clean and good looking document like FastAPI documents.
 
+### How to start the project
+```bash
+
+```
+
+## Setup Dependencies
 ### How to install Python 3.12
 ```bash
 apt install software-properties-common -y
