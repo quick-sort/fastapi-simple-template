@@ -14,6 +14,7 @@ FastAPI Simple Template
 - **[Mkdocs Material](https://squidfunk.github.io/mkdocs-material/)** generates clean and good looking document like FastAPI documents.
 
 ### How to start the project
+Before starting the project, setup environment dependencies first.
 ```bash
 poetry run uvicorn app.main:app
 ```
@@ -39,10 +40,39 @@ pip3.12 install poetry
 ```bash
 poetry config virtualenvs.in-project true
 poetry env use 3.12
-poetry lock --no-upgrade
+poetry lock --no-update
 poetry install --no-root
 ```
 
+2. Prepare PostgreSQL
+
+First install postgreSQL service.
+```bash
+apt install postgresql
+```
+
+3. Setup user and database
+login using postgres user, alter user password and create db
+```bash
+sudo su postgres
+psql
+```
+
+Then you will enter postgresql shell like this
+```
+postgres=# 
+```
+
+REMEMBER the password should be replace with your own. In production environment, should create dedicated user, do not use 'postgres' user.
+```
+postgres=#  alter user postgres password 'postgres';
+postgres=#  create database app;
+```
+
+edit '.env' file in the project, change the user:password in the SQLALCHEMY_URI accordingly.
+```bash
+SQLALCHEMY_URI=postgresql+asyncpg://postgres:postgres@localhost:5432/app
+```
 ### Document Generation
 
 use 

@@ -5,6 +5,7 @@ description = "FastAPI Application"
 authors = ["Author <author@email.com>"]
 license = "MIT"
 readme = "README.md"
+package-mode = false
 
 [tool.poetry.dependencies]
 python = "^3.12"
