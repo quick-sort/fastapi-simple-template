@@ -2,9 +2,9 @@ from sqlalchemy import Select
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.db.models.user import User, UserRole
 from app.utils.security import hash_password, verify_password, generate_jwt_token, decode_jwt_token
-from .base import Controller
+from .base import DAO
 
-class UserController(Controller[User]):
+class UserDAO(DAO[User]):
 
     def __init__(self, session:AsyncSession=None, autocommit=False):
         super().__init__(User, session, autocommit)

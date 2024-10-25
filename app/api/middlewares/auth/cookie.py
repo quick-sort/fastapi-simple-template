@@ -4,7 +4,7 @@ from starlette.authentication import (
     AuthCredentials, AuthenticationBackend, AuthenticationError, BaseUser
 )
 from starlette.middleware.authentication import AuthenticationMiddleware
-from app.controllers.user import UserController
+from app.db.dao.user import UserDAO
 from app.config import settings
 from app.utils.security import decode_jwt_token
 from .auth_user import SimpleUser
@@ -21,8 +21,8 @@ class CookieAuthBackend(AuthenticationBackend):
         if not payload or not payload.get('user_id'):
             raise AuthenticationError('Invalid credentials')
         user_id = payload.get('user_id')
-        controller = UserController(autocommit=True)
-        user = await controller.get_by_id(user_id)
+        dao = UserDAO(autocommit=True)
+        user = await dao.get_by_id(user_id)
         if not user:
             raise AuthenticationError('Invalid credentials')
         return AuthCredentials([user.role]), SimpleUser(user.id)

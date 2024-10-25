@@ -7,7 +7,7 @@ from sqlalchemy.ext.asyncio import (
 )
 from app.db.session import ASYNC_SCOPED_SESSION
 from app.db.models import User
-from app.controllers.user import UserController
+from app.db.dao import UserDAO
 from app.config import settings
 from app.utils.security import decode_jwt_token
 
@@ -30,8 +30,8 @@ async def get_current_user(
 ) -> User:
     user = None
     if request.user.is_authenticated:
-        controller = UserController(db_session)
-        user = await controller.get_by_id(request.user.identity)
+        dao = UserDAO(db_session)
+        user = await dao.get_by_id(request.user.identity)
     if not user:
         raise HTTPException(status_code=401, detail='Unauthorized')
     return user

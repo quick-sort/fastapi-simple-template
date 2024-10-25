@@ -2,7 +2,7 @@ from typing import Optional, Annotated
 import jwt
 from fastapi import APIRouter, Depends, HTTPException, Response, status
 from sqlalchemy.ext.asyncio import AsyncSession
-from app.controllers.user import UserController
+from app.db.dao.user import UserDAO
 from app.db.models import User
 from app.config import settings
 from app.utils.security import generate_jwt_token
@@ -17,7 +17,7 @@ async def login(
     db_session: Annotated[AsyncSession, Depends(depends.get_db_session)],
     response: Response,
 ) -> schema.TokenResponse:
-    controller = UserController(db_session, autocommit=True)
+    controller = UserDAO(db_session, autocommit=True)
     user = await controller.find(username=params.username)
     if not user:
         raise HTTPException(

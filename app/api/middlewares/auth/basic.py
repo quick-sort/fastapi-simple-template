@@ -6,7 +6,7 @@ from starlette.authentication import (
     AuthCredentials, AuthenticationBackend, AuthenticationError, BaseUser
 )
 from starlette.middleware.authentication import AuthenticationMiddleware
-from app.controllers.user import UserController
+from app.db.dao.user import UserDAO
 from .auth_user import SimpleUser
     
 class BasicAuthBackend(AuthenticationBackend):
@@ -24,8 +24,8 @@ class BasicAuthBackend(AuthenticationBackend):
             raise AuthenticationError('Invalid credentials')
 
         username, _, password = decoded.partition(":")
-        controller = UserController(autocommit=True)
-        user = await controller.find(username=username)
+        dao = UserDAO(autocommit=True)
+        user = await dao.find(username=username)
         if not user:
             raise AuthenticationError('Invalid credentials')
         user = user[0]

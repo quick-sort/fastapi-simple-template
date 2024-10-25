@@ -4,7 +4,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.db.session import ASYNC_SCOPED_SESSION
 
 T = TypeVar('T')
-class Controller(Generic[T]):
+class DAO(Generic[T]):
 
     def __init__(self, model:T, session:AsyncSession=None, autocommit=False):
         self.model = model
