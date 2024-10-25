@@ -16,7 +16,7 @@ FastAPI Simple Template
 ### How to start the project
 Before starting the project, setup environment dependencies first.
 ```bash
-poetry run uvicorn app.main:app
+poetry run uvicorn app.main:app --reload
 ```
 
 ## Setup Dependencies
