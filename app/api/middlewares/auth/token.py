@@ -32,7 +32,7 @@ class TokenAuthBackend(AuthenticationBackend):
         user = await dao.get_by_id(user_id)
         if not user:
             raise AuthenticationError('Invalid credentials')
-        return AuthCredentials([user.role]), SimpleUser(user.id)
+        return AuthCredentials(user.roles), SimpleUser(user.id)
 
 def add_middleware(app: FastAPI) -> None:
     app.add_middleware(AuthenticationMiddleware, backend=TokenAuthBackend())

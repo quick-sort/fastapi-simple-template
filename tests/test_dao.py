@@ -8,12 +8,12 @@ import logging
 logger = logging.getLogger(__name__)
 
 @pytest.mark.asyncio
-async def test_controller_user(db_session:AsyncSession):
+async def test_dao_user(db_session:AsyncSession):
     dao = UserDAO(db_session, autocommit=True)
     user2 = await dao.find(username="test")
     if user2:
         await dao.delete(user2[0])
-    user = await dao.create_user(username="test", email="test@example.com", role=UserRole.user, password="test")
+    user = await dao.create_user(username="test", email="test@example.com", roles=[UserRole.user], password="test")
     assert user.id is not None
     user2 = await dao.find(username="test")
     assert len(user2) == 1

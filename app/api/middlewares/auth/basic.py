@@ -32,7 +32,7 @@ class BasicAuthBackend(AuthenticationBackend):
         verified = await user.verify_password(password=password)
         if not verified:
             raise AuthenticationError('Invalid credentials')
-        return AuthCredentials([user.role]), SimpleUser(user.id)
+        return AuthCredentials(user.roles), SimpleUser(user.id)
 
 def add_middleware(app: FastAPI) -> None:
     app.add_middleware(AuthenticationMiddleware, backend=BasicAuthBackend())

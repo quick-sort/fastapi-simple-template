@@ -38,5 +38,3 @@ class DBSession:
         else:
             await self.session.commit()
         await self.session.close()
-        
-

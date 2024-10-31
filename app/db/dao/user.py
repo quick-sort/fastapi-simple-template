@@ -9,6 +9,6 @@ class UserDAO(DAO[User]):
     def __init__(self, session:AsyncSession=None, autocommit=False):
         super().__init__(User, session, autocommit)
 
-    async def create_user(self, username:str, email:str, password:str, role: UserRole = UserRole.user) -> User:
-        return await self.create(username=username, email=email, password=hash_password(password), role=role)
+    async def create_user(self, username:str, email:str, password:str, roles: list[UserRole] = [UserRole.user]) -> User:
+        return await self.create(username=username, email=email, password=hash_password(password), roles=roles)
         

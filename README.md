@@ -13,11 +13,6 @@ FastAPI Simple Template
 - **[Pylint](https://pylint.readthedocs.io/en/stable/)** is a static code analyser. Can make suggestions about how the code could be refactored.
 - **[Mkdocs Material](https://squidfunk.github.io/mkdocs-material/)** generates clean and good looking document like FastAPI documents.
 
-### How to start the project
-Before starting the project, setup environment dependencies first.
-```bash
-poetry run uvicorn app.main:app --reload
-```
 
 ## Setup Dependencies
 ### How to install Python 3.12
@@ -73,6 +68,24 @@ edit '.env' file in the project, change the user:password in the SQLALCHEMY_URI 
 ```bash
 SQLALCHEMY_URI=postgresql+asyncpg://postgres:postgres@localhost:5432/app
 ```
+
+### How to start the project
+Edit `.env` file
+```
+ENV=dev
+LOG_LEVEL=INFO
+JWT_SECRET_KEY=a_secret_string
+JWT_ALGORITHM=HS256
+JWT_EXPIRE_MINUTES=600
+SESSION_COOKIE_NAME=session
+SQLALCHEMY_URI=postgresql+asyncpg://postgres:postgres@localhost:5432/app
+```
+
+Before starting the project, setup environment dependencies first.
+```bash
+poetry run uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+```
+
 ### Document Generation
 
 use 

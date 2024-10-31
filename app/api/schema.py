@@ -24,5 +24,5 @@ class User(BaseModel):
 
     id: int
     username: str
-    role: UserRole
+    roles: list[UserRole]
     email: EmailStr
