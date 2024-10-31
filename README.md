@@ -41,27 +41,17 @@ poetry install --no-root
 
 2. Prepare PostgreSQL
 
-First install postgreSQL service.
+First install and start postgreSQL service.
 ```bash
-apt install postgresql
+sudo apt install postgresql
+sudo service postgresql start
 ```
 
 3. Setup user and database
-login using postgres user, alter user password and create db
+login using postgres user, create db and alter user password
 ```bash
-sudo su postgres
-psql
-```
-
-Then you will enter postgresql shell like this
-```
-postgres=# 
-```
-
-REMEMBER the password should be replace with your own. In production environment, should create dedicated user, do not use 'postgres' user.
-```
-postgres=#  alter user postgres password 'postgres';
-postgres=#  create database app;
+sudo su - postgres -c "psql -c 'create database app'"
+sudo su - postgres -c "psql -c \"alter user postgres password 'postgres'\""
 ```
 
 edit '.env' file in the project, change the user:password in the SQLALCHEMY_URI accordingly.
