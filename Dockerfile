@@ -7,10 +7,10 @@ ADD . /app
 RUN cd /app && \
     apk update && \
     apk add --no-cache curl && \
-    apk add --no-cache --virtual .build-deps build-base && \
+    apk add --no-cache --virtual .build-deps build-base curl-dev && \
     pip install --no-cache-dir poetry && \
     POETRY_VIRTUALENVS_CREATE=false poetry install --no-root && \
-    pip uninstall poetry &&
+    pip uninstall -y poetry && \
     apk del .build-deps
 
 EXPOSE 8000
