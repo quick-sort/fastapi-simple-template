@@ -23,9 +23,3 @@ class Base(AsyncAttrs, DeclarativeBase):
     def update(self, **kwargs):
         for key, value in kwargs.items():
             setattr(self, key, value)
-
-class IntEnumType(enum.IntEnum):
-    done = 0
-
-class StrEnumType(enum.StrEnum):
-    done = 'done'

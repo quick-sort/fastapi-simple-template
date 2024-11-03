@@ -2,7 +2,7 @@ import os
 import logging
 from typing import Literal, Optional
 from pydantic_settings import BaseSettings, SettingsConfigDict
-from pydantic import PostgresDsn
+from pydantic import PostgresDsn, DirectoryPath
 
 logger = logging.getLogger(__name__)
 env_file = os.getenv('CONFIG_ENV_FILE', '.env')
@@ -20,7 +20,7 @@ class Settings(BaseSettings):
     JWT_ALGORITHM: Literal['HS256'] = "HS256"
     JWT_EXPIRE_MINUTES: int = 60
     SESSION_COOKIE_NAME: str = 'session'
-
+    STATIC_FILES_DIR: DirectoryPath = 'static'
     ## DB CONFIG
     SQLALCHEMY_URI: PostgresDsn = 'postgresql+asyncpg://postgres:postgres@localhost:5432/app'
 

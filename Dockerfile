@@ -1,14 +1,15 @@
 from python:3.12-alpine
 WORKDIR /app
 ENV PYTHONPATH=/app
+ENV PYCURL_SSL_LIBRARY=openssl
 
 ADD . /app
 
 RUN cd /app && \
     apk update && \
-    apk add --no-cache curl && \
+    apk add --no-cache libcurl curl && \
     apk add --no-cache --virtual .build-deps build-base curl-dev && \
-    pip install --no-cache-dir poetry && \
+    pip install --no-cache-dir pycurl poetry && \
     POETRY_VIRTUALENVS_CREATE=false poetry install --no-root && \
     pip uninstall -y poetry && \
     apk del .build-deps
