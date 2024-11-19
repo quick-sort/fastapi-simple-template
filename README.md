@@ -88,7 +88,13 @@ mkdocs
 #### Unit Test
 configuration of pytest is inside pyproject.toml, section \[tool.pytest.ini_options\]
 ```bash
-poetry run pytest
+CONFIG_ENV_FILE=test.env poetry run pytest
+```
+coverage report will be generated in folder `cover`, use `serve cover` to open in browser.
+
+How to install serve
+```bash
+npm install serve -g
 ```
 
 #### Pylint
@@ -106,18 +112,29 @@ disable=
 
 
 #### Alembic
-To init alembic.ini
+To init alembic.ini, already inited
 ```bash
 poetry run alembic init --template async app/db/migrations
-```
-To init a new db
-```bash
-poetry run alembic upgrade head
-
 ```
 
 To generate a new revision
 
 ```bash
 poetry run alembic revision --autogenerate -m "Added New table"
+```
+
+To show all revisions
+```bash
+poetry run alembic history
+```
+
+To init a new db to latest
+```bash
+poetry run alembic upgrade head
+
+```
+
+To rollback to brand new
+```bash
+poetry un alembic downgrade base
 ```

@@ -47,9 +47,9 @@ async def get_current_user(
     if request.user.is_authenticated:
         dao = UserDAO(db_session)
         user = await dao.get_by_id(request.user.identity)
-    if not user:
+        return user
+    else:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail='Unauthorized'
         )
-    return user

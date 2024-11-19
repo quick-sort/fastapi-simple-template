@@ -41,8 +41,8 @@ def upgrade() -> None:
     )
     # ### end Alembic commands ###
     session = Session(bind=op.get_bind())
-    user = User(username='admin', email='admin@admin.com', password=hash_password('admin'), roles=[UserRole.admin])
-    session.add(user)
+    session.add(User(username='admin', email='admin@admin.com', password=hash_password('admin'), roles=[UserRole.admin]))
+    session.add(User(username='user', email='user@example.com', password=hash_password('user'), roles=[UserRole.user]))
     session.commit()
 
 def downgrade() -> None:

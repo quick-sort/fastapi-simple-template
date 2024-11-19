@@ -44,7 +44,7 @@ async def login(
         key=settings.SESSION_COOKIE_NAME, 
         value=jwt_token, 
         httponly=True, 
-        secure=True, 
+        # secure=True, # for https
         samesite="strict"
     )
     return schema.TokenResponse(access_token=jwt_token, token_type='Bearer')

@@ -13,6 +13,8 @@ logger = logging.getLogger(__name__)
     
 class TokenAuthBackend(AuthenticationBackend):
     async def authenticate(self, conn):
+        if 'user' in conn.scope and conn.scope["user"].is_authenticated:
+            return conn.scope["auth"], conn.scope["user"]
         if "Authorization" not in conn.headers:
             return
 
@@ -23,15 +25,14 @@ class TokenAuthBackend(AuthenticationBackend):
                 return
             payload = decode_jwt_token(token)
         except Exception:
-            raise AuthenticationError('Invalid credentials')
-        logger.info(payload)
+            raise AuthenticationError('Invalid token')
         if not payload or not payload.get('user_id'):
-            raise AuthenticationError('Invalid credentials')
+            raise AuthenticationError('Invalid token')
         user_id = payload.get('user_id')
         dao = UserDAO(autocommit=True)
         user = await dao.get_by_id(user_id)
         if not user:
-            raise AuthenticationError('Invalid credentials')
+            raise AuthenticationError('Invalid token')
         return AuthCredentials(user.roles), SimpleUser(user.id)
 
 def add_middleware(app: FastAPI) -> None:

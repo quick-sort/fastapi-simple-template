@@ -13,18 +13,19 @@ logger = logging.getLogger(__name__)
     
 class CookieAuthBackend(AuthenticationBackend):
     async def authenticate(self, conn):
+        if 'user' in conn.scope and conn.scope["user"].is_authenticated:
+            return conn.scope["auth"], conn.scope["user"]
         token = conn.cookies.get(settings.SESSION_COOKIE_NAME)
         if not token:
             return
-
         payload = decode_jwt_token(token)
         if not payload or not payload.get('user_id'):
-            raise AuthenticationError('Invalid credentials')
+            raise AuthenticationError('Invalid cookie')
         user_id = payload.get('user_id')
         dao = UserDAO(autocommit=True)
         user = await dao.get_by_id(user_id)
         if not user:
-            raise AuthenticationError('Invalid credentials')
+            raise AuthenticationError('Invalid cookie')
         return AuthCredentials(user.roles), SimpleUser(user.id)
 
 def add_middleware(app: FastAPI) -> None:

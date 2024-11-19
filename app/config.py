@@ -12,7 +12,7 @@ class Settings(BaseSettings):
         env_file=env_file,
         validate_default=False,
     )
-    ENV: str = 'dev'
+    ENV: Literal['dev', 'prod', 'test'] = 'prod'
     LOG_LEVEL: Literal['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL'] = 'INFO'
 
     ## JWT TOKEN CONFIG
