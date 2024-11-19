@@ -11,6 +11,7 @@ def test_hash_password():
     assert hash_pwd != hash_pwd_2, 'hashed password should be salted, and different for each hash'
     assert verify_password(hash_pwd, plain_pwd), 'password can not be verified'
     assert verify_password(hash_pwd_2, plain_pwd), 'password can not be verified'
+    assert not verify_password(plain_pwd, plain_pwd), 'password can not be verified'
 
 def test_jwt_token():
     data = {'user_id': 1}

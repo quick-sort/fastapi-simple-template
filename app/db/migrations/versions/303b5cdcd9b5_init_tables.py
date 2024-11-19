@@ -16,7 +16,7 @@ from app.db.models.user import UserRole, User
 from app.utils.security import hash_password
 
 # revision identifiers, used by Alembic.
-revision: str = '10ac93d61cdb'
+revision: str = '303b5cdcd9b5'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None

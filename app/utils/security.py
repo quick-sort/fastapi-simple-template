@@ -7,7 +7,10 @@ from app.config import settings
 PWD_CONTEXT = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 def verify_password(hashed_password: str, password: str) -> bool:
-    return PWD_CONTEXT.verify(password, hashed_password)
+    try:
+        return PWD_CONTEXT.verify(password, hashed_password)
+    except:
+        return False
 
 def hash_password(password:str) -> str:
     return PWD_CONTEXT.hash(password)
