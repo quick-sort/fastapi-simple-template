@@ -2,7 +2,7 @@ from typing import Optional, TYPE_CHECKING
 import enum
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import Enum, String, DateTime, ForeignKey, func, Text, UniqueConstraint, Column, Table, Boolean, ARRAY
-from app.utils.security import verify_password
+from app.utils.security import verify_password, hash_password
 from .base import Base
 
 class UserRole(enum.StrEnum):
@@ -22,3 +22,6 @@ class User(Base):
 
     def verify_password(self, password:str) -> bool:
         return verify_password(self.password, password)
+
+    def update_password(self, password:str) -> bool:
+        self.password = hash_password(password)

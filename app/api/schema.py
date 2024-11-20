@@ -14,6 +14,10 @@ class LoginParams(BaseModel):
     username: str
     password: str
 
+class ChangePasswordParams(BaseModel):
+    old_password: str
+    new_password: str
+
 class CreateUserParams(BaseModel):
     username: str
     email: EmailStr

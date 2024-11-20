@@ -48,3 +48,22 @@ async def login(
         samesite="strict"
     )
     return schema.TokenResponse(access_token=jwt_token, token_type='Bearer')
+
+@router.post('/change_password')
+async def change_password(
+    params: schema.ChangePasswordParams,
+    user: Annotated[User, Depends(depends.get_current_user)],
+    db_session: Annotated[AsyncSession, Depends(depends.get_db_session)],
+) -> schema.User:
+    verified = user.verify_password(params.old_password)
+    if not verified:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Could not validate credentials",
+        )
+    if params.new_password != params.old_password:
+        user.update_password(params.new_password)
+        db_session.add(user)
+        await db_session.commit()
+        await db_session.refresh(user)
+    return user

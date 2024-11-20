@@ -59,3 +59,19 @@ def test_root_role(client: TestClient):
     assert resp.status_code == 200, 'role checking is not working'
     result = resp.json()
     assert len(result) >= 2, 'get user list failed'
+
+def test_change_password(client: TestClient):
+    resp = client.post('/api/auth/login', json={'username': 'user', 'password': 'user'})
+    assert resp.status_code == 200, 'login failed'
+
+    resp = client.post('/api/auth/change_password', json={'old_password': 'incorrect', 'new_password': 'user'})
+    assert resp.status_code == 401, 'failed to verify old password'
+
+    resp = client.post('/api/auth/change_password', json={'old_password': 'user', 'new_password': 'new_password'})
+    assert resp.status_code == 200, 'failed to change password'
+
+    resp = client.post('/api/auth/login', json={'username': 'user', 'password': 'new_password'})
+    assert resp.status_code == 200, 'failed to change password'
+
+    resp = client.post('/api/auth/change_password', json={'old_password': 'new_password', 'new_password': 'user'})
+    assert resp.status_code == 200, 'failed to change password'
