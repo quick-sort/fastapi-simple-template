@@ -5,7 +5,20 @@ from app.db.models.user import UserRole
 class JWTToken(BaseModel):
     user_id: int
     scopes: list[str]
-    
+
+class Deleted(BaseModel):
+    id: int
+
+class APIKey(BaseModel):
+    id: int
+    user_id: int
+    name: Optional[str] = 'api_key'
+    api_key: str
+
+class CreateAPIKeyParams(BaseModel):
+    user_id: int
+    name: Optional[str] = 'api_key'
+
 class TokenResponse(BaseModel):
     access_token: str
     token_type: Literal['Bearer']

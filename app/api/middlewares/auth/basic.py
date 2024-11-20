@@ -7,14 +7,15 @@ from starlette.authentication import (
 )
 from starlette.middleware.authentication import AuthenticationMiddleware
 from app.db.dao.user import UserDAO
-from .auth_user import SimpleUser
+from .auth_user import SimpleUser, should_bypass, on_error
 import logging
 logger = logging.getLogger(__name__)
 
 class BasicAuthBackend(AuthenticationBackend):
     async def authenticate(self, conn):
-        if 'user' in conn.scope and conn.scope["user"].is_authenticated:
-            return conn.scope["auth"], conn.scope["user"]
+        bypass, data = should_bypass(conn)
+        if bypass:
+            return data
 
         if "Authorization" not in conn.headers:
             return 
@@ -39,4 +40,4 @@ class BasicAuthBackend(AuthenticationBackend):
         return AuthCredentials(user.roles), SimpleUser(user.id)
 
 def add_middleware(app: FastAPI) -> None:
-    app.add_middleware(AuthenticationMiddleware, backend=BasicAuthBackend())
+    app.add_middleware(AuthenticationMiddleware, backend=BasicAuthBackend(), on_error=on_error)

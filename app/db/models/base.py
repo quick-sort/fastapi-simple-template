@@ -7,7 +7,7 @@ from sqlalchemy.ext.asyncio import AsyncAttrs
 from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.dialects.postgresql import JSON
 import re
-TABLE_NAME_PATTERN = re.compile(r'(?<!^)(?=[A-Z])')
+TABLE_NAME_PATTERN = re.compile(r'(?<!^)(?=[A-Z][a-z])')
 
 class Base(AsyncAttrs, DeclarativeBase):
 

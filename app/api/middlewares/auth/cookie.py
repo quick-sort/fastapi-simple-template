@@ -7,14 +7,15 @@ from starlette.middleware.authentication import AuthenticationMiddleware
 from app.db.dao.user import UserDAO
 from app.config import settings
 from app.utils.security import decode_jwt_token
-from .auth_user import SimpleUser
+from .auth_user import SimpleUser, should_bypass, on_error
 import logging
 logger = logging.getLogger(__name__)
     
 class CookieAuthBackend(AuthenticationBackend):
     async def authenticate(self, conn):
-        if 'user' in conn.scope and conn.scope["user"].is_authenticated:
-            return conn.scope["auth"], conn.scope["user"]
+        bypass, data = should_bypass(conn)
+        if bypass:
+            return data
         token = conn.cookies.get(settings.SESSION_COOKIE_NAME)
         if not token:
             return
@@ -29,4 +30,4 @@ class CookieAuthBackend(AuthenticationBackend):
         return AuthCredentials(user.roles), SimpleUser(user.id)
 
 def add_middleware(app: FastAPI) -> None:
-    app.add_middleware(AuthenticationMiddleware, backend=CookieAuthBackend())
+    app.add_middleware(AuthenticationMiddleware, backend=CookieAuthBackend(), on_error=on_error)

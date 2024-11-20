@@ -1,7 +1,7 @@
 import pytest
 import time
 from datetime import timedelta
-from app.utils.security import hash_password, verify_password, generate_jwt_token, decode_jwt_token
+from app.utils.security import hash_password, verify_password, generate_jwt_token, decode_jwt_token, generate_api_key
 
 def test_hash_password():
     plain_pwd = '123456'
@@ -21,3 +21,10 @@ def test_jwt_token():
     time.sleep(3)
     payload = decode_jwt_token(jwt_token)
     assert payload is None, 'jwt should expired'
+
+
+def test_generate_api_key():
+    apikey = generate_api_key()
+    assert len(apikey) >= 32
+    apikey2 = generate_api_key()
+    assert apikey != apikey2

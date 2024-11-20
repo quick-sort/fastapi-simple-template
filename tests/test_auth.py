@@ -20,7 +20,12 @@ def test_login(client: TestClient):
 
     resp = client.post('/api/auth/login', json={'username': 'admin', 'password': 'incorrect'})
     assert resp.status_code == 401, 'login check failed'
+    resp = client.post('/api/auth/login', json={'username': 'admin', 'password': 'admin'})
+    assert resp.status_code == 200, 'login failed'
+    resp = client.get('/api/auth/logout')
+    assert resp.status_code == 200, 'logout is not working'
 
+def test_auth(client: TestClient):
     resp = client.post('/api/auth/login', json={'username': 'admin', 'password': 'admin'})
     assert resp.status_code == 200, 'login failed'
     result = resp.json()
@@ -38,9 +43,42 @@ def test_login(client: TestClient):
 
     resp = client.get('/api/users/me', auth=httpx.BasicAuth('admin', 'admin'))
     assert resp.status_code == 200, 'basic auth middleware is not working'
+
+    resp = client.get('/api/users/me', auth=httpx.BasicAuth('admin', 'incorrect'))
+    assert resp.status_code == 401, 'basic auth middleware is not working'
     
     resp = client.get('/api/users/me', headers={'Authorization': f'Bearer {access_token}'})
     assert resp.status_code == 200, 'token auth middleware is not working'
+
+    resp = client.get('/api/users/me', headers={'Authorization': f'Bearer {access_token[0:10]}'})
+    assert resp.status_code == 401, 'token auth middleware is not working'
+
+def test_api_key(client: TestClient):
+    resp = client.get('/api/auth/logout')
+    assert resp.status_code == 200, 'logout is not working'
+
+    api_key = 'incorrect'
+    resp = client.get('/api/users/me', headers={'x-key': api_key})
+    assert resp.status_code == 401, 'api key middleware is not working'
+
+    resp = client.post('/api/auth/login', json={'username': 'user', 'password': 'user'})
+    assert resp.status_code == 200, 'login failed'
+
+    resp = client.post('/api/api_keys/my', params={'name': 'api_key'})
+    assert resp.status_code == 200, 'create my api key failed'
+    data = resp.json()
+    api_key = data['api_key']
+    key_id = data['id']
+
+    resp = client.get('/api/users/me', headers={'x-key': api_key})
+    assert resp.status_code == 200, 'api key middleware is not working'
+
+    resp = client.get('/api/api_keys/my', headers={'x-key': api_key})
+    assert resp.status_code == 200, 'api key middleware is not working'
+    assert len(resp.json()) > 0
+
+    resp = client.delete(f'/api/api_keys/my/{key_id}', headers={'x-key': api_key})
+    assert resp.status_code == 200, 'api key middleware is not working'
 
 def test_root_role(client: TestClient):
     resp = client.post('/api/auth/login', json={'username': 'user', 'password': 'user'})
@@ -57,6 +95,7 @@ def test_root_role(client: TestClient):
 
     resp = client.get('/api/users')
     assert resp.status_code == 200, 'role checking is not working'
+    
     result = resp.json()
     assert len(result) >= 2, 'get user list failed'
 

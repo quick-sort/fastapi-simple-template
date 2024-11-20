@@ -6,7 +6,7 @@ from app.db.session import ASYNC_SCOPED_SESSION
 T = TypeVar('T')
 class DAO(Generic[T]):
 
-    def __init__(self, model:T, session:AsyncSession=None, autocommit=False):
+    def __init__(self, model:T, session:AsyncSession=None, autocommit=True):
         self.model = model
         self.autocommit = autocommit
         if session is None:
@@ -24,6 +24,7 @@ class DAO(Generic[T]):
         self.session.add(obj)
         if self.autocommit:
             await self.session.commit()
+            await self.session.refresh(obj)
         return obj
 
     async def find(self, **kwargs) -> list[T]:

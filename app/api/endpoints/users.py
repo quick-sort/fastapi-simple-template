@@ -10,7 +10,7 @@ router = APIRouter()
 
 @router.get('/')
 async def list_users(
-    user: Annotated[User, Security(depends.get_scoped_user, scopes=[UserRole.admin])],
+    admin_user: Annotated[User, Security(depends.get_scoped_user, scopes=[UserRole.admin])],
     db_session: Annotated[AsyncSession, Depends(depends.get_db_session)],
 ) -> list[schema.User]:
     dao = UserDAO(db_session, autocommit=True)

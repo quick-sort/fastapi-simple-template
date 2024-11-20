@@ -3,6 +3,12 @@ from datetime import datetime, timedelta, timezone
 import jwt
 from passlib.context import CryptContext
 from app.config import settings
+import secrets
+import string
+
+def generate_api_key(length=64):
+    alphabet = string.ascii_letters + string.digits
+    return ''.join(secrets.choice(alphabet) for i in range(length))
 
 PWD_CONTEXT = CryptContext(schemes=["bcrypt"], deprecated="auto")
 

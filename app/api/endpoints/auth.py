@@ -12,7 +12,6 @@ from .. import depends
 router = APIRouter()
 @router.get('/logout')
 async def logout(
-    db_session: Annotated[AsyncSession, Depends(depends.get_db_session)],
     response: Response,
 ) -> None:
     response.delete_cookie(
