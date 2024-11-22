@@ -1,7 +1,10 @@
 from typing import Generic, TypeVar
-from sqlalchemy import Select
+import logging
+from sqlalchemy import Select, Delete
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.db.session import ASYNC_SCOPED_SESSION
+
+logger = logging.getLogger(__name__)
 
 T = TypeVar('T')
 class DAO(Generic[T]):
@@ -38,6 +41,11 @@ class DAO(Generic[T]):
     
     async def get_by_id(self, id:int) -> T | None:
         return await self.session.get(self.model, id)
+
+    async def delete_id(self, obj_id:int) -> None:
+        await self.session.execute(Delete(self.model).filter_by(id=obj_id))
+        if self.autocommit:
+            await self.session.commit()
 
     async def delete(self, obj:T) -> None:
         await self.session.delete(obj)

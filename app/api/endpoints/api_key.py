@@ -71,7 +71,5 @@ async def delete_api_Key(
     db_session: Annotated[AsyncSession, Depends(depends.get_db_session)],
 ) -> schema.Deleted:
     dao = DAO(APIKey, db_session)
-    obj = await dao.get_by_id(key_id)
-    if obj:
-        await dao.delete(obj)
+    await dao.delete_id(key_id)
     return {'id': key_id}

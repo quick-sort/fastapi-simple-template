@@ -23,4 +23,7 @@ async def test_dao_user(db_session:AsyncSession):
     assert user2.verify_password("test")
     user = await dao.get_by_id(user.id)
     assert user.id == user2.id
+    await dao.delete_id(user.id)
+    user2 = await dao.find(username="test")
+    assert not user2
     

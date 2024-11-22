@@ -1,13 +1,15 @@
 from typing import Optional, Annotated
-import jwt
+import logging
 from fastapi import APIRouter, Depends, HTTPException, Response, status
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.db.dao.user import UserDAO
-from app.db.models import User
+from app.db.models import User, UserRole
 from app.config import settings
 from app.utils.security import generate_jwt_token
 from .. import schema
 from .. import depends
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter()
 @router.get('/logout')
@@ -17,15 +19,36 @@ async def logout(
     response.delete_cookie(
         key=settings.SESSION_COOKIE_NAME, 
     )
-    
+
+@router.post('/registry')
+async def registry_user(
+    params: schema.CreateUserParams,
+    db_session: Annotated[AsyncSession, Depends(depends.get_db_session)],
+) -> schema.User:
+    dao = UserDAO(db_session, autocommit=True)
+    user = await dao.find(username=params.username)
+    if user:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="username exists",
+        )
+    user = await dao.find(email=params.email)
+    if user:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="email exists",
+        )
+    user = await dao.create_user(username=params.username, email=params.email, password=params.password, roles=[UserRole.user])
+    return user
+
 @router.post('/login')
 async def login(
     params: schema.LoginParams,
     db_session: Annotated[AsyncSession, Depends(depends.get_db_session)],
     response: Response,
 ) -> schema.TokenResponse:
-    controller = UserDAO(db_session, autocommit=True)
-    user = await controller.find(username=params.username)
+    dao = UserDAO(db_session, autocommit=True)
+    user = await dao.find(username=params.username)
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -47,6 +70,12 @@ async def login(
         samesite="strict"
     )
     return schema.TokenResponse(access_token=jwt_token, token_type='Bearer')
+
+@router.get('/me')
+async def get_my_user(
+    user: Annotated[User, Depends(depends.get_current_user)],
+) -> schema.User:
+    return user
 
 @router.post('/change_password')
 async def change_password(

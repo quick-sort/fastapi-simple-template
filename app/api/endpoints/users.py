@@ -17,8 +17,13 @@ async def list_users(
     users = await dao.find()
     return users
 
-@router.get('/me')
-async def get_my_user(
-    user: Annotated[User, Depends(depends.get_current_user)],
-) -> schema.User:
-    return user
+
+@router.delete('/{user_id}')
+async def delete_user(
+    user_id: int,
+    admin_user: Annotated[User, Security(depends.get_scoped_user, scopes=[UserRole.admin])],
+    db_session: Annotated[AsyncSession, Depends(depends.get_db_session)],
+) -> schema.Deleted:
+    dao = UserDAO(db_session, autocommit=True)
+    await dao.delete_id(user_id)
+    return {'id': user_id}

@@ -31,10 +31,8 @@ class ChangePasswordParams(BaseModel):
     old_password: str
     new_password: str
 
-class CreateUserParams(BaseModel):
-    username: str
+class CreateUserParams(LoginParams):
     email: EmailStr
-    password: str
 
 class User(BaseModel):
     model_config = ConfigDict(from_attributes=True)
