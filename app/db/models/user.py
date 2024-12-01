@@ -8,6 +8,7 @@ from .base import Base
 
 if TYPE_CHECKING:
     from .api_key import APIKey
+    from .external_user import ExternalUser
 
 class UserRole(enum.StrEnum):
     admin = 'admin'
@@ -24,6 +25,7 @@ class User(Base):
     password:Mapped[str] = mapped_column(String, nullable=False)
     state:Mapped[UserState] = mapped_column(Enum(UserState), default=UserState.active)
     api_keys:Mapped[list[APIKey]] = relationship(back_populates='user')
+    external_users:Mapped[list[ExternalUser]] = relationship(back_populates='user')
 
     def verify_password(self, password:str) -> bool:
         return verify_password(self.password, password)

@@ -1,10 +1,40 @@
 from typing import Optional, Literal
-from pydantic import BaseModel, EmailStr, ConfigDict
+from pydantic import BaseModel, EmailStr, ConfigDict, HttpUrl, Field
 from app.db.models.user import UserRole
 
 class JWTToken(BaseModel):
     user_id: int
     scopes: list[str]
+
+class UpdateOAuthProviderParams(BaseModel):
+    name: Optional[str] = Field(pattern=r'[A-Za-z_\-0-9]+')
+    provider_type: Optional[str] = Field(pattern=r'[A-Za-z_\-0-9]+')
+    client_id: Optional[str]
+    client_secret: Optional[str]
+    login_url: Optional[HttpUrl]
+    verify_url: Optional[HttpUrl]
+    access_token_url: Optional[HttpUrl]
+    refresh_token_url: Optional[HttpUrl]
+    callback_url: Optional[HttpUrl]
+    scope: list[str]
+
+class CreateOAuthProviderParams(BaseModel):
+    name: str = Field(pattern=r'[A-Za-z_\-0-9]+')
+    provider_type: str = Field(pattern=r'[A-Za-z_\-0-9]+')
+    client_id: str
+    client_secret: str
+    login_url: HttpUrl
+    verify_url: HttpUrl
+    access_token_url: HttpUrl
+    refresh_token_url: HttpUrl
+    callback_url: HttpUrl
+    scope: list[str]
+
+class OAuthProvider(BaseModel):
+    id: int
+    name: str
+    provider_type: str
+    login_url: str
 
 class Deleted(BaseModel):
     id: int
@@ -35,8 +65,6 @@ class CreateUserParams(LoginParams):
     email: EmailStr
 
 class User(BaseModel):
-    model_config = ConfigDict(from_attributes=True)
-
     id: int
     username: str
     roles: list[UserRole]

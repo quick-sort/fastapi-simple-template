@@ -1,6 +1,6 @@
 from typing import Generic, TypeVar
 import logging
-from sqlalchemy import Select, Delete
+from sqlalchemy import Select, Delete, Update
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.db.session import ASYNC_SCOPED_SESSION
 
@@ -39,6 +39,10 @@ class DAO(Generic[T]):
         if len(result) > 0:
             return result[0]
     
+    async def update_by_id(self, id:int, **kwargs) -> None:
+        stmt = Update(self.model).values(**kwargs).where(self.model.id == id)
+        await self.session.execute(stmt)
+
     async def get_by_id(self, id:int) -> T | None:
         return await self.session.get(self.model, id)
 

@@ -1,6 +1,7 @@
 from typing import Optional, Annotated
 import logging
-from fastapi import APIRouter, Depends, HTTPException, Response, status
+from fastapi import APIRouter, Depends, HTTPException, Response, status, Path
+from fastapi.responses import RedirectResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.db.dao.user import UserDAO
 from app.db.models import User, UserRole
@@ -12,6 +13,7 @@ from .. import depends
 logger = logging.getLogger(__name__)
 
 router = APIRouter()
+
 @router.get('/logout')
 async def logout(
     response: Response,
@@ -95,3 +97,19 @@ async def change_password(
         await db_session.commit()
         await db_session.refresh(user)
     return user
+
+@router.get('/oauth/login/{provider_name}')
+async def oauth_login(
+    provider_name: Annotated[str, Path(pattern='^[A-Za-z0-9_\-]+$')],
+    db_session: Annotated[AsyncSession, Depends(depends.get_db_session)],
+) -> RedirectResponse:
+    # login_url?response_type=code&client_id=CLIENT_ID&redirect_uri=CALLBACK_URL&scope=read
+    ...
+
+@router.get('/oauth/callback/{provider_name}')
+async def oauth_callback_with_id(
+    provider_name: Annotated[str, Path(pattern='^[A-Za-z0-9_\-]+$')],
+    code: str,
+    db_session: Annotated[AsyncSession, Depends(depends.get_db_session)],
+) -> RedirectResponse:
+    ...

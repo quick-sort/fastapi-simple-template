@@ -16,8 +16,8 @@ class Settings(BaseSettings):
     LOG_LEVEL: Literal['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL'] = 'INFO'
 
     ## JWT TOKEN CONFIG
-    JWT_SECRET_KEY: str
-    JWT_ALGORITHM: Literal['HS256'] = "HS256"
+    JWT_SECRET_KEY: Optional[str] = 'changeme'
+    JWT_ALGORITHM: Literal['HS256', 'RS256'] = "HS256"
     JWT_EXPIRE_MINUTES: int = 60
     SESSION_COOKIE_NAME: str = 'session'
     STATIC_FILES_DIR: DirectoryPath = 'static'
