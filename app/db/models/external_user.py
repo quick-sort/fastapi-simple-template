@@ -13,7 +13,7 @@ class ExternalUser(Base):
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete='CASCADE'))
     user: Mapped[User] = relationship(back_populates="external_users")
     oauth_provider_id: Mapped[int] = mapped_column(ForeignKey("oauth_providers.id", ondelete='CASCADE'))
-    oauth_provider: Mapped[OauthProvider] = relationship(back_populates="external_user")
+    oauth_provider: Mapped[OauthProvider] = relationship(back_populates="external_users")
     external_id: Mapped[str] = mapped_column(String)
     access_token: Mapped[str] = mapped_column(Text)
     refresh_token: Mapped[str] = mapped_column(String)

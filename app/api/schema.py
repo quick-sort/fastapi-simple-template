@@ -1,5 +1,5 @@
-from typing import Optional, Literal
-from pydantic import BaseModel, EmailStr, ConfigDict, HttpUrl, Field
+from typing import Optional, Literal, Any
+from pydantic import BaseModel, EmailStr, ConfigDict, HttpUrl, Field, field_serializer, FieldSerializationInfo
 from app.db.models.user import UserRole
 
 class JWTToken(BaseModel):
@@ -7,16 +7,20 @@ class JWTToken(BaseModel):
     scopes: list[str]
 
 class UpdateOAuthProviderParams(BaseModel):
-    name: Optional[str] = Field(pattern=r'[A-Za-z_\-0-9]+')
-    provider_type: Optional[str] = Field(pattern=r'[A-Za-z_\-0-9]+')
-    client_id: Optional[str]
-    client_secret: Optional[str]
-    login_url: Optional[HttpUrl]
-    verify_url: Optional[HttpUrl]
-    access_token_url: Optional[HttpUrl]
-    refresh_token_url: Optional[HttpUrl]
-    callback_url: Optional[HttpUrl]
-    scope: list[str]
+    name: Optional[str] = Field(pattern=r'[A-Za-z_\-0-9]+', default=None)
+    provider_type: Optional[str] = Field(pattern=r'[A-Za-z_\-0-9]+', default=None)
+    client_id: Optional[str] = Field(pattern=r'[A-Za-z_\-0-9]+', default=None)
+    client_secret: Optional[str] = Field(default=None)
+    login_url: Optional[HttpUrl] = Field(default=None)
+    verify_url: Optional[HttpUrl] = Field(default=None)
+    access_token_url: Optional[HttpUrl] = Field(default=None)
+    refresh_token_url: Optional[HttpUrl] = Field(default=None)
+    callback_url: Optional[HttpUrl] = Field(default=None)
+    scope: Optional[list[str]] = Field(default=[])
+
+    @field_serializer('login_url', 'verify_url', 'access_token_url', 'refresh_token_url', 'callback_url')
+    def url_to_str(self, value: Any, info: FieldSerializationInfo) -> str:
+        return str(value)
 
 class CreateOAuthProviderParams(BaseModel):
     name: str = Field(pattern=r'[A-Za-z_\-0-9]+')
@@ -29,6 +33,10 @@ class CreateOAuthProviderParams(BaseModel):
     refresh_token_url: HttpUrl
     callback_url: HttpUrl
     scope: list[str]
+
+    @field_serializer('login_url', 'verify_url', 'access_token_url', 'refresh_token_url', 'callback_url')
+    def url_to_str(self, value: Any, info: FieldSerializationInfo) -> str:
+        return str(value)
 
 class OAuthProvider(BaseModel):
     id: int

@@ -12,7 +12,7 @@ router = APIRouter()
 logger = logging.getLogger(__name__)
 
 @router.get('/my')
-async def list_my_api_Key(
+async def list_my_api_key(
     user: Annotated[User, Depends(depends.get_current_user)],
     db_session: Annotated[AsyncSession, Depends(depends.get_db_session)],
 ) -> list[schema.APIKey]:
@@ -20,7 +20,7 @@ async def list_my_api_Key(
     return objs
 
 @router.post('/my')
-async def create_my_api_Key(
+async def create_my_api_key(
     user: Annotated[User, Depends(depends.get_current_user)],
     db_session: Annotated[AsyncSession, Depends(depends.get_db_session)],
     name: Optional[str] = None,
@@ -30,7 +30,7 @@ async def create_my_api_Key(
     return obj
 
 @router.delete('/my/{key_id}')
-async def delete_my_api_Key(
+async def delete_my_api_key(
     key_id:int,
     user: Annotated[User, Depends(depends.get_current_user)],
     db_session: Annotated[AsyncSession, Depends(depends.get_db_session)],
@@ -42,7 +42,7 @@ async def delete_my_api_Key(
     return {'id': key_id}
 
 @router.post('/')
-async def create_api_Key(
+async def create_api_key(
     params: schema.CreateAPIKeyParams,
     admin_user: Annotated[User, Security(depends.get_scoped_user, scopes=[UserRole.admin])],
     db_session: Annotated[AsyncSession, Depends(depends.get_db_session)],
@@ -52,7 +52,7 @@ async def create_api_Key(
     return obj
 
 @router.get('/')
-async def list_api_Key(
+async def list_api_key(
     admin_user: Annotated[User, Security(depends.get_scoped_user, scopes=[UserRole.admin])],
     db_session: Annotated[AsyncSession, Depends(depends.get_db_session)],
     user_id: Optional[int] = None,
@@ -65,7 +65,7 @@ async def list_api_Key(
     return objs
 
 @router.delete('/{key_id}')
-async def delete_api_Key(
+async def delete_api_key(
     key_id: int,
     admin_user: Annotated[User, Security(depends.get_scoped_user, scopes=[UserRole.admin])],
     db_session: Annotated[AsyncSession, Depends(depends.get_db_session)],

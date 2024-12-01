@@ -8,7 +8,7 @@ if TYPE_CHECKING:
     from .external_user import ExternalUser
 
 class OauthProvider(Base):
-    name: Mapped[str] = mapped_column(String, default='oauth provider')
+    name: Mapped[str] = mapped_column(String, default='oauth provider', unique=True)
     provider_type: Mapped[str] = mapped_column(String, default='oauth2')
     client_id: Mapped[str] = mapped_column(String)
     client_secret: Mapped[str] = mapped_column(String)

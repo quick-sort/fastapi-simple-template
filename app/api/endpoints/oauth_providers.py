@@ -1,11 +1,14 @@
-from fastapi import APIRouter, Depends, HTTPException, Response, Security
 from typing import Optional, Annotated
+import logging
+from fastapi import APIRouter, Depends, HTTPException, Response, Security
+from pydantic import HttpUrl
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.db.models import User, UserRole, OauthProvider
 from app.db.dao.base import DAO
 from .. import schema
 from .. import depends
 
+logger = logging.getLogger(__name__)
 router = APIRouter()
 
 @router.get('/')
@@ -15,6 +18,15 @@ async def list_oauth_providers(
     dao = DAO(OauthProvider, db_session, autocommit=True)
     objs = await dao.find()
     return objs
+
+@router.get('/{provider_id}')
+async def get_oauth_provider(
+    provider_id: int,
+    db_session: Annotated[AsyncSession, Depends(depends.get_db_session)],
+) -> schema.OAuthProvider:
+    dao = DAO(OauthProvider, db_session, autocommit=True)
+    obj = await dao.get_by_id(provider_id)
+    return obj
 
 @router.post('/')
 async def create_oauth_provider(
@@ -36,7 +48,7 @@ async def update_oauth_provider(
     dao = DAO(OauthProvider, db_session, autocommit=True)
     data = params.model_dump(exclude_unset=True)
     await dao.update_by_id(provider_id, **data)
-    obj = await dao.find_one(provider_id)
+    obj = await dao.get_by_id(provider_id)
     return obj
 
 @router.delete('/{provider_id}')

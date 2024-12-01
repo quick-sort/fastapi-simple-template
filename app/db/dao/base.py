@@ -42,6 +42,8 @@ class DAO(Generic[T]):
     async def update_by_id(self, id:int, **kwargs) -> None:
         stmt = Update(self.model).values(**kwargs).where(self.model.id == id)
         await self.session.execute(stmt)
+        if self.autocommit:
+            await self.session.commit()
 
     async def get_by_id(self, id:int) -> T | None:
         return await self.session.get(self.model, id)

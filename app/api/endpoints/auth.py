@@ -100,7 +100,7 @@ async def change_password(
 
 @router.get('/oauth/login/{provider_name}')
 async def oauth_login(
-    provider_name: Annotated[str, Path(pattern='^[A-Za-z0-9_\-]+$')],
+    provider_name: Annotated[str, Path(pattern=r'^[A-Za-z0-9_\-]+$')],
     db_session: Annotated[AsyncSession, Depends(depends.get_db_session)],
 ) -> RedirectResponse:
     # login_url?response_type=code&client_id=CLIENT_ID&redirect_uri=CALLBACK_URL&scope=read
@@ -108,7 +108,7 @@ async def oauth_login(
 
 @router.get('/oauth/callback/{provider_name}')
 async def oauth_callback_with_id(
-    provider_name: Annotated[str, Path(pattern='^[A-Za-z0-9_\-]+$')],
+    provider_name: Annotated[str, Path(pattern=r'^[A-Za-z0-9_\-]+$')],
     code: str,
     db_session: Annotated[AsyncSession, Depends(depends.get_db_session)],
 ) -> RedirectResponse:
