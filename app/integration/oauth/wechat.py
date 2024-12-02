@@ -1,7 +1,7 @@
-from .provider import ProviderFactory, OAuthProvider
+from .provider import ProviderFactory, BaseProvider
 
 
-class WechatOAuthProvider(OAuthProvider):
+class WechatProvider(BaseProvider):
     def build_redirect_url(self):
         ...
     async def fetch_access_token(self, code:str) -> str:
@@ -11,4 +11,4 @@ class WechatOAuthProvider(OAuthProvider):
     async def refresh_access_token(self, refresh_token:str) -> str:
         ...
 
-ProviderFactory.providers['wechat'] = WechatOAuthProvider
+ProviderFactory.providers['wechat'] = WechatProvider
