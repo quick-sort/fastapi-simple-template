@@ -7,6 +7,7 @@ from starlette.authentication import (
 )
 from starlette.middleware.authentication import AuthenticationMiddleware
 from app.db.dao.user import UserDAO
+from app.db.session import ASYNC_DB_SESSION
 from .auth_user import SimpleUser, should_bypass, on_error
 import logging
 logger = logging.getLogger(__name__)
@@ -29,15 +30,15 @@ class BasicAuthBackend(AuthenticationBackend):
         except (ValueError, UnicodeDecodeError, binascii.Error) as exc:
             raise AuthenticationError('Invalid credentials')
         username, _, password = decoded.partition(":")
-        dao = UserDAO(autocommit=True)
-        user = await dao.find(username=username)
-        if not user:
-            raise AuthenticationError('Invalid credentials')
-        user = user[0]
-        verified = user.verify_password(password=password)
-        if not verified:
-            raise AuthenticationError('Invalid credentials')
-        return AuthCredentials(user.roles), SimpleUser(user.id)
+        async with ASYNC_DB_SESSION() as session:
+            dao = UserDAO(session=session)
+            user = await dao.find_one(username=username)
+            if not user:
+                raise AuthenticationError('Invalid credentials')
+            verified = user.verify_password(password=password)
+            if not verified:
+                raise AuthenticationError('Invalid credentials')
+            return AuthCredentials(user.roles), SimpleUser(user.id)
 
 def add_middleware(app: FastAPI) -> None:
     app.add_middleware(AuthenticationMiddleware, backend=BasicAuthBackend(), on_error=on_error)

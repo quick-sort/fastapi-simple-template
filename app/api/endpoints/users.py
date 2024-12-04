@@ -13,7 +13,7 @@ async def list_users(
     admin_user: Annotated[User, Security(depends.get_scoped_user, scopes=[UserRole.admin])],
     db_session: Annotated[AsyncSession, Depends(depends.get_db_session)],
 ) -> list[schema.User]:
-    dao = UserDAO(db_session, autocommit=True)
+    dao = UserDAO(db_session)
     users = await dao.find()
     return users
 
@@ -24,6 +24,6 @@ async def delete_user(
     admin_user: Annotated[User, Security(depends.get_scoped_user, scopes=[UserRole.admin])],
     db_session: Annotated[AsyncSession, Depends(depends.get_db_session)],
 ) -> schema.Deleted:
-    dao = UserDAO(db_session, autocommit=True)
+    dao = UserDAO(db_session)
     await dao.delete_id(user_id)
     return {'id': user_id}

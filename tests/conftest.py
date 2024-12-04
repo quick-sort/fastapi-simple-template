@@ -5,7 +5,7 @@ from fastapi.testclient import TestClient
 import pytest
 import pytest_asyncio
 from app.main import app
-from app.db.session import ASYNC_SCOPED_SESSION
+from app.db.session import ASYNC_DB_SESSION
 
 
 @pytest.fixture(scope="function")
@@ -15,6 +15,6 @@ def client() -> Generator[TestClient, None, None]:
 
 @pytest_asyncio.fixture(scope="function")
 async def db_session() -> AsyncGenerator[AsyncSession, None]:
-    async with ASYNC_SCOPED_SESSION() as session:
+    async with ASYNC_DB_SESSION() as session:
         yield session
-    await ASYNC_SCOPED_SESSION.remove()
+    await ASYNC_DB_SESSION.remove()

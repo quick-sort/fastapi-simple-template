@@ -2,20 +2,17 @@ from typing import Generic, TypeVar
 import logging
 from sqlalchemy import Select, Delete, Update
 from sqlalchemy.ext.asyncio import AsyncSession
-from app.db.session import ASYNC_SCOPED_SESSION
 
 logger = logging.getLogger(__name__)
 
 T = TypeVar('T')
 class DAO(Generic[T]):
 
-    def __init__(self, model:T, session:AsyncSession=None, autocommit=True):
+    def __init__(self, model:T, session:AsyncSession, autocommit=True):
         self.model = model
         self.autocommit = autocommit
-        if session is None:
-            self.session:AsyncSession = ASYNC_SCOPED_SESSION()
-        else:
-            self.session = session
+        assert isinstance(session, AsyncSession), 'session is required'
+        self.session = session
 
     async def clean_all(self) -> None:
         await self.session.execute(f"TRUNCATE TABLE {self.model.__tablename__}")

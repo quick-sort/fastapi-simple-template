@@ -7,7 +7,7 @@ from fastapi.security import SecurityScopes
 from sqlalchemy.ext.asyncio import (
     AsyncSession,
 )
-from app.db.session import ASYNC_SCOPED_SESSION
+from app.db.session import ASYNC_DB_SESSION
 from app.db.models import User
 from app.db.dao import UserDAO
 from app.config import settings
@@ -16,7 +16,7 @@ from app.utils.security import decode_jwt_token
 logger = logging.getLogger(__name__)
 
 async def get_db_session() -> AsyncGenerator[AsyncSession, None]:
-    async_session = ASYNC_SCOPED_SESSION()
+    async_session = ASYNC_DB_SESSION()
     try:
         yield async_session
     except Exception:
@@ -24,7 +24,7 @@ async def get_db_session() -> AsyncGenerator[AsyncSession, None]:
         await async_session.rollback()
         raise
     finally:
-        await ASYNC_SCOPED_SESSION.remove()
+        await ASYNC_DB_SESSION.remove()
 
 async def get_scoped_user(
     security_scopes: SecurityScopes,

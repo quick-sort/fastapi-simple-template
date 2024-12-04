@@ -15,7 +15,7 @@ router = APIRouter()
 async def list_oauth_providers(
     db_session: Annotated[AsyncSession, Depends(depends.get_db_session)],
 ) -> list[schema.OAuthProvider]:
-    dao = DAO(OauthProvider, db_session, autocommit=True)
+    dao = DAO(OauthProvider, db_session)
     objs = await dao.find()
     return objs
 
@@ -24,7 +24,7 @@ async def get_oauth_provider(
     provider_id: int,
     db_session: Annotated[AsyncSession, Depends(depends.get_db_session)],
 ) -> schema.OAuthProvider:
-    dao = DAO(OauthProvider, db_session, autocommit=True)
+    dao = DAO(OauthProvider, db_session)
     obj = await dao.get_by_id(provider_id)
     return obj
 
@@ -34,7 +34,7 @@ async def create_oauth_provider(
     admin_user: Annotated[User, Security(depends.get_scoped_user, scopes=[UserRole.admin])],
     db_session: Annotated[AsyncSession, Depends(depends.get_db_session)],
 ) -> schema.OAuthProvider:
-    dao = DAO(OauthProvider, db_session, autocommit=True)
+    dao = DAO(OauthProvider, db_session)
     obj = await dao.create(**params.model_dump())
     return obj
 
@@ -45,7 +45,7 @@ async def update_oauth_provider(
     admin_user: Annotated[User, Security(depends.get_scoped_user, scopes=[UserRole.admin])],
     db_session: Annotated[AsyncSession, Depends(depends.get_db_session)],
 ) -> schema.OAuthProvider:
-    dao = DAO(OauthProvider, db_session, autocommit=True)
+    dao = DAO(OauthProvider, db_session)
     data = params.model_dump(exclude_unset=True)
     await dao.update_by_id(provider_id, **data)
     obj = await dao.get_by_id(provider_id)
@@ -57,6 +57,6 @@ async def delete_oauth_provider(
     admin_user: Annotated[User, Security(depends.get_scoped_user, scopes=[UserRole.admin])],
     db_session: Annotated[AsyncSession, Depends(depends.get_db_session)],
 ) -> schema.Deleted:
-    dao = DAO(OauthProvider, db_session, autocommit=True)
+    dao = DAO(OauthProvider, db_session)
     await dao.delete_id(provider_id)
     return {'id': provider_id}
