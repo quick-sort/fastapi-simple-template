@@ -8,11 +8,25 @@ import logging
 logger = logging.getLogger(__name__)
 
 @pytest.mark.asyncio
-async def test_dao_user(db_session:AsyncSession):
-    dao = UserDAO(db_session, autocommit=True)
+async def test_sub_transaction(db_session:AsyncSession):
+    dao = UserDAO(db_session)
     user2 = await dao.find(username="test")
     if user2:
         await dao.delete(user2[0])
+    await db_session.commit()
+    user = await dao.create_user(username="test", email="test@example.com", roles=[UserRole.user], password="test")
+    assert user.id is not None
+    await db_session.rollback()
+    user2 = await dao.find_one(username="test")
+    assert user2 is None
+
+@pytest.mark.asyncio
+async def test_dao_user(db_session:AsyncSession):
+    dao = UserDAO(db_session)
+    user2 = await dao.find(username="test")
+    if user2:
+        await dao.delete(user2[0])
+    await db_session.commit()
     user = await dao.create_user(username="test", email="test@example.com", roles=[UserRole.user], password="test")
     assert user.id is not None
     user2 = await dao.find(username="test")

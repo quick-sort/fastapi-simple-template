@@ -8,24 +8,20 @@ logger = logging.getLogger(__name__)
 T = TypeVar('T')
 class DAO(Generic[T]):
 
-    def __init__(self, model:T, session:AsyncSession, autocommit=True):
+    def __init__(self, model:T, session:AsyncSession):
         self.model = model
-        self.autocommit = autocommit
-        assert isinstance(session, AsyncSession), 'session is required'
+        assert isinstance(session, AsyncSession), 'AsyncSession is required'
         self.session = session
 
     async def clean_all(self) -> None:
         await self.session.execute(f"TRUNCATE TABLE {self.model.__tablename__}")
-        if self.autocommit:
-            await self.session.commit()
 
     async def create(self, **kwargs) -> T:
-        obj = self.model(**kwargs)
-        self.session.add(obj)
-        if self.autocommit:
-            await self.session.commit()
-            await self.session.refresh(obj)
-        return obj
+        async with self.session.begin_nested() as nested_transaction:
+            obj = self.model(**kwargs)
+            self.session.add(obj)
+            await nested_transaction.commit()
+            return obj
 
     async def find(self, **kwargs) -> list[T]:
         result = await self.session.scalars(Select(self.model).filter_by(**kwargs))
@@ -39,18 +35,12 @@ class DAO(Generic[T]):
     async def update_by_id(self, id:int, **kwargs) -> None:
         stmt = Update(self.model).values(**kwargs).where(self.model.id == id)
         await self.session.execute(stmt)
-        if self.autocommit:
-            await self.session.commit()
 
     async def get_by_id(self, id:int) -> T | None:
         return await self.session.get(self.model, id)
 
     async def delete_id(self, obj_id:int) -> None:
         await self.session.execute(Delete(self.model).filter_by(id=obj_id))
-        if self.autocommit:
-            await self.session.commit()
 
     async def delete(self, obj:T) -> None:
         await self.session.delete(obj)
-        if self.autocommit:
-            await self.session.commit()

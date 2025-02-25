@@ -1,3 +1,5 @@
+from contextvars import ContextVar, Token
+import uuid
 import asyncio
 from sqlalchemy.ext.asyncio import (
     create_async_engine, 
@@ -8,18 +10,34 @@ from sqlalchemy.ext.asyncio import (
 from sqlalchemy.pool import NullPool
 from app.config import settings
 
-ASYNC_ENGINE = create_async_engine(
-    str(settings.SQLALCHEMY_URI), 
-    #echo=True,
-    poolclass=NullPool,
-)
+db_session_id = ContextVar('db_session')
 
-ASYNC_ENGINE_FACTORY = async_sessionmaker(
-    ASYNC_ENGINE,
-    expire_on_commit=False,
-)
+def set_db_session_id() -> Token:
+    return db_session_id.set(str(uuid.uuid4()))
+
+def reset_db_session_id(token: Token) -> None:
+    db_session_id.reset(token)
+
+def scopefunction() -> any:
+    session_id = db_session_id.get(None)
+    if not session_id:
+        return asyncio.current_task()
+    else:
+        return session_id
 
 ASYNC_DB_SESSION:AsyncSession = async_scoped_session(
-    ASYNC_ENGINE_FACTORY,
-    scopefunc=asyncio.current_task,
+    async_sessionmaker(
+        create_async_engine(
+            str(settings.SQLALCHEMY_URI), 
+            #echo=True,
+            poolclass=NullPool,
+        ),
+        expire_on_commit=False,
+    ),
+    scopefunc=scopefunction,
 )
+__all__ = [
+    'ASYNC_DB_SESSION',
+    'set_db_session_id',
+    'reset_db_session_id'
+]

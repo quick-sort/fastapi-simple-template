@@ -24,7 +24,7 @@ def test_jwt_token():
 
 
 def test_generate_api_key():
-    apikey = generate_api_key()
+    apikey = generate_api_key(32)
     assert len(apikey) >= 32
-    apikey2 = generate_api_key()
+    apikey2 = generate_api_key(32)
     assert apikey != apikey2

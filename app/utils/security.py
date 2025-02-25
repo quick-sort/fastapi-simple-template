@@ -6,7 +6,9 @@ from app.config import settings
 import secrets
 import string
 
-def generate_api_key(length=64):
+def generate_api_key(length:int=None):
+    if not isinstance(length, int) or length < settings.API_KEY_LEN:
+        length = settings.API_KEY_LEN
     alphabet = string.ascii_letters + string.digits
     return ''.join(secrets.choice(alphabet) for i in range(length))
 

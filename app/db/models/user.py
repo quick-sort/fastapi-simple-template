@@ -1,6 +1,7 @@
 from __future__ import annotations
 from typing import Optional, TYPE_CHECKING
 import enum
+from starlette.authentication import BaseUser
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import Enum, String, DateTime, ForeignKey, func, Text, UniqueConstraint, Column, Table, Boolean, ARRAY
 from app.utils.security import verify_password, hash_password
@@ -18,7 +19,7 @@ class UserState(enum.IntEnum):
     active = 0
     deactive = 1
 
-class User(Base):
+class User(Base, BaseUser):
     username:Mapped[str] = mapped_column(String, unique=True)
     roles: Mapped[list[UserRole]] = mapped_column(ARRAY(Enum(UserRole)), default=[UserRole.user])
     email:Mapped[str] = mapped_column(String, unique=True)
@@ -32,3 +33,11 @@ class User(Base):
 
     def update_password(self, password:str) -> bool:
         self.password = hash_password(password)
+
+    @property
+    def identity(self) -> int:
+        return self.id
+    
+    @property
+    def is_authenticated(self) -> bool:
+        return self.id is not None

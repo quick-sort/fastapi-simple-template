@@ -17,4 +17,3 @@ def client() -> Generator[TestClient, None, None]:
 async def db_session() -> AsyncGenerator[AsyncSession, None]:
     async with ASYNC_DB_SESSION() as session:
         yield session
-    await ASYNC_DB_SESSION.remove()

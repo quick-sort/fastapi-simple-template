@@ -1,3 +1,11 @@
 site_name: FastAPI Project Template
 theme:
   name: material
+nav:
+  - Introduction: index.md
+  - Tutorials:
+    - Setup: tutorials/setup.md
+  - How-to Guides:
+    - Unit Test: test.md
+  - References:
+    - Unit Test: test.md

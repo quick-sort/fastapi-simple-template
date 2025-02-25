@@ -5,8 +5,7 @@ from pydantic import HttpUrl
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.db.models import User, UserRole, OauthProvider
 from app.db.dao.base import DAO
-from .. import schema
-from .. import depends
+from app.api import schema
 
 logger = logging.getLogger(__name__)
 router = APIRouter()

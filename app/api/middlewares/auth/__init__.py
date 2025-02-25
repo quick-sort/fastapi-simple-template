@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-
+from .base import get_current_user, get_scoped_user
 def add_middlewares(app: FastAPI):
     
     from .token import add_middleware
@@ -13,5 +13,7 @@ def add_middlewares(app: FastAPI):
 
 
 __all__ = [
-    'add_middlewares'
+    'add_middlewares',
+    'get_current_user',
+    'get_scoped_user',
 ]

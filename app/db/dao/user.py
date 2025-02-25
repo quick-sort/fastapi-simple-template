@@ -9,8 +9,8 @@ logger = logging.getLogger(__name__)
 
 class UserDAO(DAO[User]):
 
-    def __init__(self, session:AsyncSession, autocommit=True):
-        super().__init__(User, session, autocommit)
+    def __init__(self, session:AsyncSession):
+        super().__init__(User, session)
 
     async def create_user(self, username:str, email:str, password:str, roles: list[UserRole] = [UserRole.user]) -> User:
         return await self.create(username=username, email=email, password=hash_password(password), roles=roles)
