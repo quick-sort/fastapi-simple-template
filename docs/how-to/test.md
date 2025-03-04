@@ -7,11 +7,6 @@ CONFIG_ENV_FILE=test.env poetry run pytest
 ```
 coverage report will be generated in folder `cover`, use `serve cover` to open in browser.
 
-How to install serve
-```bash
-npm install serve -g
-```
-
 #### Pylint
 
 ```bash

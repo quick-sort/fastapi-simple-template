@@ -1,32 +1,17 @@
-FastAPI Simple Template
-========================
+# Simple FastAPI Project Template
 
-### How to prepare project
+This is a backend api service template based on python stack. 
 
-1. Prepare project dependencies
-2. Prepare PostgreSQL
+## Technology Stack and Features
 
-First install and start postgreSQL service.
-```bash
-sudo apt install postgresql
-sudo service postgresql start
-```
+### Used in production
+- [**FastAPI**](https://fastapi.tiangolo.com) for the Python backend API.
+- [Pydantic](https://docs.pydantic.dev), used by FastAPI, for the data validation and settings management.
+- [**SQLAlchemy**](https://www.sqlalchemy.org) for the Python SQL database interactions (ORM).
+- [PostgreSQL](https://www.postgresql.org) as the SQL database.
 
-3. Setup user and database
-
-
-edit '.env' file in the project, change the user:password in the SQLALCHEMY_URI accordingly.
-```bash
-SQLALCHEMY_URI=postgresql+asyncpg://postgres:postgres@localhost:5432/app
-```
-
-### How to start the project
-Edit `.env` file
-```
-
-```
-
-Before starting the project, setup environment dependencies first.
-```bash
-
-```
+### Development Env
+- [**Poetry**](https://python-poetry.org) for managing Python project dependencies.
+- [PyTest](https://docs.pytest.org/en/stable/) for unit test.
+- [PyLint](https://pylint.readthedocs.io/en/stable/) for static code analysis.
+- [Mkdocs Material](https://squidfunk.github.io/mkdocs-material/) generates clean and good looking document like FastAPI documents.

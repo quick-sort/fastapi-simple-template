@@ -5,6 +5,7 @@ ENV PYCURL_SSL_LIBRARY=openssl
 ENV TZ=Asia/Shanghai
 
 ADD pyproject.toml /app/pyproject.toml
+ADD poetry.lock /app/poetry.lock
 
 RUN cd /app && \
     apk update && \
@@ -18,6 +19,6 @@ RUN cd /app && \
 ADD . /app
 
 EXPOSE 8000
-HEALTHCHECK CMD curl --fail http://localhost:8000/api/health/ping
+HEALTHCHECK CMD curl --fail http://localhost:8000/api/v1/health/ping
 
 CMD ["sh", "-c", "alembic upgrade head; uvicorn app.main:app --host 0.0.0.0 --port 8000"]

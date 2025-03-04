@@ -4,8 +4,8 @@ theme:
 nav:
   - Introduction: index.md
   - Tutorials:
-    - Setup: tutorials/setup.md
+    - Get Started: tutorials/get-started.md
   - How-to Guides:
-    - Unit Test: test.md
-  - References:
-    - Unit Test: test.md
+    - Database: how-to/database.md
+    - Documentation: how-to/documentation.md
+    - Unit Test: how-to/test.md
