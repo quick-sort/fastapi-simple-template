@@ -9,3 +9,7 @@ nav:
     - Database: how-to/database.md
     - Documentation: how-to/documentation.md
     - Unit Test: how-to/test.md
+plugins:
+  search:
+repo_name: quick-sort/fastapi-simple-template
+repo_url: https://github.com/quick-sort/fastapi-simple-template
