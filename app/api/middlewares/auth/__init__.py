@@ -6,7 +6,7 @@ def add_middlewares(app: FastAPI):
     add_middleware(app)
     from .basic import add_middleware
     add_middleware(app)
-    from .cookie import add_middleware
+    from .session import add_middleware
     add_middleware(app)
     from .api_key import add_middleware
     add_middleware(app)

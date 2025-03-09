@@ -14,7 +14,10 @@ router.include_router(health.router, prefix='/health', tags=['health'])
 from . import api_key
 router.include_router(api_key.router, prefix='/api_keys', tags=['api_keys'])
 
-#from . import oauth_providers
-#router.include_router(oauth_providers.router, prefix='/oauth_providers', tags=['oauth_providers'])
+from . import oauth_providers
+router.include_router(oauth_providers.router, prefix='/oauth/providers', tags=['oauth providers'])
+
+from . import oauth
+router.include_router(oauth.router, prefix='/oauth', tags=['oauth'])
 
 __all__ = ['router']

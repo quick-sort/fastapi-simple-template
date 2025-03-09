@@ -1,7 +1,7 @@
 from typing import Optional, Annotated
 import logging
-from fastapi import APIRouter, Depends, HTTPException, Response, status, Path
-from fastapi.responses import RedirectResponse
+from datetime import datetime, timedelta, timezone
+from fastapi import APIRouter, Depends, HTTPException, Response, status, Request
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.api.middlewares.auth import get_current_user, get_scoped_user
 from app.api.middlewares.db import get_db_session
@@ -17,11 +17,9 @@ router = APIRouter()
 
 @router.get('/logout')
 async def logout(
-    response: Response,
+    request: Request,
 ) -> None:
-    response.delete_cookie(
-        key=settings.SESSION_COOKIE_NAME, 
-    )
+    request.session.clear()
 
 @router.post('/registry')
 async def registry_user(
@@ -48,7 +46,7 @@ async def registry_user(
 async def login(
     params: schema.LoginParams,
     db_session: Annotated[AsyncSession, Depends(get_db_session)],
-    response: Response,
+    request: Request,
 ) -> schema.TokenResponse:
     dao = UserDAO(db_session)
     user = await dao.find(username=params.username)
@@ -64,15 +62,15 @@ async def login(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Could not validate credentials",
         )
-    jwt_token = generate_jwt_token({'user_id': user.id})
-    response.set_cookie(
-        key=settings.SESSION_COOKIE_NAME, 
-        value=jwt_token, 
-        httponly=True, 
-        # secure=True, # for https
-        samesite="strict"
+    expires = timedelta(minutes=settings.JWT_EXPIRE_MINUTES)
+    jwt_token = generate_jwt_token({'user_id': user.id}, expires_delta=expires)
+    request.session['token'] = jwt_token
+    return schema.TokenResponse(
+        access_token=jwt_token, 
+        token_type='Bearer',
+        expires_in=expires.total_seconds(),
+        expires_at=int((datetime.now(timezone.utc) + expires).timestamp()),
     )
-    return schema.TokenResponse(access_token=jwt_token, token_type='Bearer')
 
 @router.get('/me')
 async def get_my_user(
@@ -98,19 +96,3 @@ async def change_password(
         await db_session.commit()
         await db_session.refresh(user)
     return user
-
-@router.get('/oauth/login/{provider_name}')
-async def oauth_login(
-    provider_name: Annotated[str, Path(pattern=r'^[A-Za-z0-9_\-]+$')],
-    db_session: Annotated[AsyncSession, Depends(get_db_session)],
-) -> RedirectResponse:
-    # login_url?response_type=code&client_id=CLIENT_ID&redirect_uri=CALLBACK_URL&scope=read
-    ...
-
-@router.get('/oauth/callback/{provider_name}')
-async def oauth_callback_with_id(
-    provider_name: Annotated[str, Path(pattern=r'^[A-Za-z0-9_\-]+$')],
-    code: str,
-    db_session: Annotated[AsyncSession, Depends(get_db_session)],
-) -> RedirectResponse:
-    ...

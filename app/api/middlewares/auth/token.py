@@ -26,6 +26,7 @@ class TokenAuthBackend(AuthenticationBackend):
             payload = decode_jwt_token(token)
         except Exception:
             raise AuthenticationError('Invalid token')
+
         if not payload or not payload.get('user_id'):
             raise AuthenticationError('Invalid token')
         user_id = payload.get('user_id')

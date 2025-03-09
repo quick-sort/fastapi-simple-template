@@ -3,7 +3,7 @@ from typing import Optional, TYPE_CHECKING
 import enum
 from starlette.authentication import BaseUser
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from sqlalchemy import Enum, String, DateTime, ForeignKey, func, Text, UniqueConstraint, Column, Table, Boolean, ARRAY
+from sqlalchemy import Enum, String, ARRAY
 from app.utils.security import verify_password, hash_password
 from .base import Base
 
@@ -31,7 +31,7 @@ class User(Base, BaseUser):
     def verify_password(self, password:str) -> bool:
         return verify_password(self.password, password)
 
-    def update_password(self, password:str) -> bool:
+    def update_password(self, password:str) -> None:
         self.password = hash_password(password)
 
     @property

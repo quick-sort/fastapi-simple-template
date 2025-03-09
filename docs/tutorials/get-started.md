@@ -47,7 +47,7 @@ LOG_LEVEL=INFO
 JWT_SECRET_KEY=$(tr -dc 'a-zA-Z0-9' < /dev/urandom | fold -w 20 | head -n 1)
 JWT_ALGORITHM=HS256
 JWT_EXPIRE_MINUTES=600
-SESSION_COOKIE_NAME=session
+SESSION_SECRET_KEY=secret_key
 SQLALCHEMY_URI=postgresql+asyncpg://$USER_NAME:$USER_PASSWORD@localhost:5432/$DB_NAME
 EOF
 ```

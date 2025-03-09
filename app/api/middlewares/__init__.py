@@ -5,6 +5,8 @@ def config_middlewares(app: FastAPI):
     add_middlewares(app)
     from .db import add_middleware
     add_middleware(app)
+    from .http_session import add_middleware
+    add_middleware(app)
 
 __all__ = [
     'config_middlewares'

@@ -16,11 +16,15 @@ PWD_CONTEXT = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 def verify_password(hashed_password: str, password: str) -> bool:
     try:
+        if not hashed_password or not password:
+            return False
         return PWD_CONTEXT.verify(password, hashed_password)
     except:
         return False
 
 def hash_password(password:str) -> str:
+    if not password:
+        return None
     return PWD_CONTEXT.hash(password)
 
 def generate_jwt_token(data: dict, expires_delta: timedelta | None = None) -> str:
