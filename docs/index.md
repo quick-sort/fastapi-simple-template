@@ -8,6 +8,7 @@ This is a backend api service template based on python stack.
 - [Pydantic](https://docs.pydantic.dev), used by FastAPI, for the data validation and settings management.
 - [SQLAlchemy](https://www.sqlalchemy.org) for the Python SQL database interactions (ORM).
 - [PostgreSQL](https://www.postgresql.org) as the SQL database.
+- [Authlib](https://authlib.org) for oauth support.
 
 ### Development Env
 - [Poetry](https://python-poetry.org) for managing Python project dependencies.
