@@ -1,6 +1,6 @@
 ## Init Template
 
-You can git clone the template to your local workspace, or [fork](https://github.com/quick-sort/fastapi-simple-template/fork) / [import](https://github.com/new/import) on github directly.
+You can git clone the template to your local workspace, or [use this template](https://github.com/new?template_name=fastapi-simple-template&template_owner=quick-sort) on github directly.
 ```bash
 git clone --depth=1 https://github.com/quick-sort/fastapi-simple-template.git myapp
 cd myapp
