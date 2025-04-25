@@ -21,7 +21,7 @@ class Settings(BaseSettings):
     JWT_EXPIRE_MINUTES: int = 60
     API_KEY_LEN: int = 64
     SESSION_SECRET_KEY: str
-    STATIC_FILES_DIR: DirectoryPath = 'static'
+    STATIC_FILES_DIR: Optional[DirectoryPath] = None
     ## DB CONFIG
     SQLALCHEMY_URI: PostgresDsn = 'postgresql+asyncpg://postgres:postgres@localhost:5432/app'
 

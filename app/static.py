@@ -1,8 +1,9 @@
 import os
 import mimetypes
+from starlette.exceptions import HTTPException as StarletteHTTPException
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
-from fastapi import APIRouter, FastAPI, HTTPException, StarletteHTTPException
+from fastapi import APIRouter, FastAPI, HTTPException
 from app.config import settings
 
 router = APIRouter()
@@ -23,5 +24,5 @@ class SPAStaticFiles(StaticFiles):
                 raise ex
 
 def setup_static(app: FastAPI):
-    if os.path.exists(settings.STATIC_FILES_DIR):
+    if settings.STATIC_FILES_DIR and os.path.exists(settings.STATIC_FILES_DIR):
         app.mount("/", SPAStaticFiles(directory=settings.STATIC_FILES_DIR), name="static")
