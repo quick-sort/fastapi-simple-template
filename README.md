@@ -1,5 +1,7 @@
 # Simple FastAPI Project Template
 
+![Test Status](https://github.com/quick-sort/fastapi-simple-template/actions/workflows/test.yml/badge.svg?event=push&branch=main)
+
 This is a backend api service template based on python stack. 
 
 ## Key Features Ready
