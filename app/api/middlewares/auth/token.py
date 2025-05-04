@@ -4,7 +4,7 @@ from starlette.authentication import (
 )
 from starlette.middleware.authentication import AuthenticationMiddleware
 from app.api.middlewares.db import get_db_session
-from app.db.dao.user import UserDAO
+from app.db.models.user import User
 from app.utils.security import decode_jwt_token
 from .base import should_bypass, on_error
 import logging
@@ -30,9 +30,8 @@ class TokenAuthBackend(AuthenticationBackend):
         if not payload or not payload.get('user_id'):
             raise AuthenticationError('Invalid token')
         user_id = payload.get('user_id')
-        session = get_db_session(conn)
-        dao = UserDAO(session)
-        user = await dao.get_by_id(user_id)
+        db_session = get_db_session(conn)
+        user = await db_session.get(User, user_id)
         if not user:
             raise AuthenticationError('Invalid token')
         return AuthCredentials(user.roles), user

@@ -4,7 +4,7 @@ from starlette.authentication import (
 )
 from starlette.middleware.authentication import AuthenticationMiddleware
 from app.api.middlewares.db import get_db_session
-from app.db.dao.user import UserDAO
+from app.db.models.user import User
 from .base import should_bypass, on_error
 import logging
 logger = logging.getLogger(__name__)
@@ -18,8 +18,8 @@ class APIKeyAuthBackend(AuthenticationBackend):
             return
 
         apikey = conn.headers["x-key"]
-        dao = UserDAO(get_db_session(conn))
-        user = await dao.get_user_by_apikey(apikey)
+        db_session = get_db_session(conn)
+        user = await User.get_user_by_apikey(db_session, apikey)
         if not user:
             raise AuthenticationError('Invalid api key')
         return AuthCredentials(user.roles), user

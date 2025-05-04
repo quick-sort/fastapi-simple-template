@@ -6,7 +6,7 @@ from starlette.authentication import (
 )
 from starlette.middleware.authentication import AuthenticationMiddleware
 from app.api.middlewares.db import get_db_session
-from app.db.dao.user import UserDAO
+from app.db.models.user import User
 from .base import should_bypass, on_error
 import logging
 logger = logging.getLogger(__name__)
@@ -30,8 +30,7 @@ class BasicAuthBackend(AuthenticationBackend):
             raise AuthenticationError('Invalid credentials')
         username, _, password = decoded.partition(":")
         session = get_db_session(conn)
-        dao = UserDAO(session=session)
-        user = await dao.find_one(username=username)
+        user:User | None = await User.find_one(session, username=username)
         if not user:
             raise AuthenticationError('Invalid credentials')
         verified = user.verify_password(password=password)

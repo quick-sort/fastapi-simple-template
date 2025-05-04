@@ -2,7 +2,6 @@ from typing import Optional, Annotated
 from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.api.middlewares.db import get_db_session
-from app.db.dao.user import UserDAO
 
 router = APIRouter()
 

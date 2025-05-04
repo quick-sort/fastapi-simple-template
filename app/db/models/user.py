@@ -3,12 +3,12 @@ from typing import Optional, TYPE_CHECKING
 import enum
 from starlette.authentication import BaseUser
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from sqlalchemy import Enum, String, ARRAY
+from sqlalchemy import Enum, String, ARRAY, Select, and_, func
+from sqlalchemy.ext.asyncio import AsyncSession
 from app.utils.security import verify_password, hash_password
 from .base import Base
-
+from .api_key import APIKey
 if TYPE_CHECKING:
-    from .api_key import APIKey
     from .external_user import ExternalUser
 
 class UserRole(enum.StrEnum):
@@ -27,6 +27,26 @@ class User(Base, BaseUser):
     state:Mapped[UserState] = mapped_column(Enum(UserState), default=UserState.active)
     api_keys:Mapped[list[APIKey]] = relationship(back_populates='user')
     external_users:Mapped[list[ExternalUser]] = relationship(back_populates='user')
+
+    @classmethod
+    async def create(cls, async_session:AsyncSession, username:str, email:str, password:str, roles: list[UserRole] = [UserRole.user]) -> User:
+        return await super().create(async_session=async_session, username=username, email=email, password=hash_password(password), roles=roles)
+    
+    @classmethod
+    async def get_user_by_apikey(cls, async_session:AsyncSession, apikey:str) -> User:
+        stmt = Select(User).where(User.api_keys.any(APIKey.api_key == apikey))
+        objs = await async_session.scalars(stmt)
+        objs = objs.all()
+        if len(objs):
+            return objs[0]
+    
+    @classmethod
+    async def get_user_by_external_token(cls, async_session:AsyncSession, token:str) -> User:
+        stmt = Select(User).where(User.external_users.any(and_(ExternalUser.expires_at > func.now(), ExternalUser.access_token == token)))
+        objs = await async_session.scalars(stmt)
+        objs = objs.all()
+        if len(objs):
+            return objs[0]
 
     def verify_password(self, password:str) -> bool:
         return verify_password(self.password, password)
