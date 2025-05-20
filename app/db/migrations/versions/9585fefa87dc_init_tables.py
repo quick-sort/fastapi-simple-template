@@ -12,8 +12,7 @@ import sqlalchemy as sa
 #import pgvector
 from sqlalchemy.dialects import postgresql
 from sqlalchemy.orm.session import Session
-from app.db.models.user import UserRole, User
-from app.utils.security import hash_password
+from app.db.models.user import User
 
 # revision identifiers, used by Alembic.
 revision: str = '9585fefa87dc'
@@ -95,8 +94,7 @@ def upgrade() -> None:
     op.create_index(op.f('ix_external_users_external_id'), 'external_users', ['external_id'], unique=False)
     # ### end Alembic commands ###
     session = Session(bind=op.get_bind())
-    session.add(User(username='admin', email='admin@admin.com', password=hash_password('admin'), roles=[UserRole.admin]))
-    session.add(User(username='user', email='user@example.com', password=hash_password('user'), roles=[UserRole.user]))
+    User.init_user(session)
     session.commit()
 
 def downgrade() -> None:

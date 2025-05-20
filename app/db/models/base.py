@@ -19,6 +19,11 @@ class Base(AsyncAttrs, DeclarativeBase):
     updated_at:Mapped[datetime.datetime] = mapped_column(DateTime, default=func.now(), onupdate=func.now())
 
     @classmethod
+    async def count(cls, async_session:AsyncSession, **kwargs) -> int:
+        result = await async_session.scalar(Select(func.count(cls.id)).filter_by(**kwargs))
+        return result
+
+    @classmethod
     async def clean_all(cls, async_session:AsyncSession) -> None:
         await async_session.execute(f"TRUNCATE TABLE {cls.__tablename__}")
 
@@ -31,8 +36,13 @@ class Base(AsyncAttrs, DeclarativeBase):
             return obj
 
     @classmethod
-    async def find(cls, async_session:AsyncSession, **kwargs) -> list[Base]:
-        result = await async_session.scalars(Select(cls).filter_by(**kwargs))
+    async def find(cls, async_session:AsyncSession, offset:int=None, limit:int=None, **kwargs) -> list[Base]:
+        query = Select(cls).filter_by(**kwargs)
+        if offset is not None:
+            query = query.offset(offset)
+        if limit is not None:
+            query = query.limit(limit)
+        result = await async_session.scalars(query)
         return result.all()
 
     @classmethod

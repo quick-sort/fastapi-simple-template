@@ -23,7 +23,11 @@ class Settings(BaseSettings):
     SESSION_SECRET_KEY: str
     STATIC_FILES_DIR: Optional[DirectoryPath] = None
     ## DB CONFIG
-    SQLALCHEMY_URI: PostgresDsn = 'postgresql+asyncpg://postgres:postgres@localhost:5432/app'
+    SQLALCHEMY_URI: PostgresDsn
+    DEFAULT_ADMIN_USERNAME: Optional[str] = 'admin'
+    DEFAULT_ADMIN_EMAIL: Optional[str] = 'admin@admin.com'
+    DEFAULT_ADMIN_PASSWORD: Optional[str] = 'admin'
+
 
 settings = Settings()
 

@@ -51,12 +51,18 @@ async def list_api_key(
     admin_user: Annotated[User, Security(get_scoped_user, scopes=[UserRole.admin])],
     db_session: Annotated[AsyncSession, Depends(get_db_session)],
     user_id: Optional[int] = None,
-) -> list[schema.APIKey]:
+    offset: Optional[int] = None,
+    limit: Optional[int] = None,
+) -> schema.PagedList[schema.APIKey]:
     if user_id:
         objs = await APIKey.find(async_session=db_session, user_id=user_id)
+        total = len(objs)
+        offset = 0
+        limit = len(objs)
     else:
-        objs = await APIKey.find(async_session=db_session)
-    return objs
+        objs = await APIKey.find(async_session=db_session, offset=offset, limit=limit)
+        total = await APIKey.count(async_session=db_session)
+    return schema.PagedList(items=objs, total=total, offset=offset, limit=limit)
 
 @router.delete('/{key_id}')
 async def delete_api_key(

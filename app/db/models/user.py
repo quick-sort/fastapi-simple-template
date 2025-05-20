@@ -2,9 +2,10 @@ from __future__ import annotations
 from typing import Optional, TYPE_CHECKING
 import enum
 from starlette.authentication import BaseUser
-from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy.orm import Mapped, mapped_column, relationship, Session
 from sqlalchemy import Enum, String, ARRAY, Select, and_, func
 from sqlalchemy.ext.asyncio import AsyncSession
+from app.config import settings
 from app.utils.security import verify_password, hash_password
 from .base import Base
 from .api_key import APIKey
@@ -27,6 +28,10 @@ class User(Base, BaseUser):
     state:Mapped[UserState] = mapped_column(Enum(UserState), default=UserState.active)
     api_keys:Mapped[list[APIKey]] = relationship(back_populates='user')
     external_users:Mapped[list[ExternalUser]] = relationship(back_populates='user')
+
+    @classmethod
+    def init_user(cls, session: Session):
+        session.add(User(username=settings.DEFAULT_ADMIN_USERNAME, email=settings.DEFAULT_ADMIN_EMAIL, password=hash_password(settings.DEFAULT_ADMIN_PASSWORD), roles=[UserRole.admin]))
 
     @classmethod
     async def create(cls, async_session:AsyncSession, username:str, email:str, password:str, roles: list[UserRole] = [UserRole.user]) -> User:

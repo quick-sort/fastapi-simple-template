@@ -7,6 +7,17 @@ class JWTToken(BaseModel):
     user_id: int
     scopes: list[str]
 
+class PagedList[T:BaseModel](BaseModel):
+    items: list[T]
+    total: int
+    offset: int
+    limit: int
+
+    @field_serializer('items')
+    def serialize_items(self, value: list[T], info: FieldSerializationInfo) -> list[dict]:
+        return [item.model_dump() if hasattr(item, 'model_dump') else item for item in value]
+
+
 class UpdateOAuthProviderParams(BaseModel):
     name: Optional[str] = Field(pattern=r'[A-Za-z_\-0-9]+', default=None)
     provider_type: Optional[str] = Field(pattern=r'[A-Za-z_\-0-9]+', default=None)
