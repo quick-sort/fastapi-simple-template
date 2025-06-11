@@ -1,4 +1,5 @@
 import asyncio
+import dotenv
 from typing import Generator, AsyncGenerator
 from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi.testclient import TestClient
@@ -7,6 +8,7 @@ import pytest_asyncio
 from app.main import app
 from app.db.session import ASYNC_DB_SESSION
 
+dotenv.load_dotenv('.env.pytest')
 
 @pytest.fixture(scope="function")
 def client() -> Generator[TestClient, None, None]:

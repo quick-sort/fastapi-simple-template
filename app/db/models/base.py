@@ -2,7 +2,7 @@ from __future__ import annotations
 import datetime
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 from sqlalchemy import DateTime, func, Select, Update, Delete
-from sqlalchemy.ext.asyncio import AsyncAttrs, AsyncSession
+from sqlalchemy.ext.asyncio import AsyncAttrs, AsyncSession, async_object_session
 from sqlalchemy.ext.declarative import declared_attr
 import re
 TABLE_NAME_PATTERN = re.compile(r'(?<!^)(?=[A-Z][a-z])')
@@ -60,6 +60,10 @@ class Base(AsyncAttrs, DeclarativeBase):
     async def delete_by_id(cls, async_session:AsyncSession, id:int) -> None:
         stmt = Delete(cls).where(cls.id == id)
         await async_session.execute(stmt)
+
+    @property
+    def async_db_session(self) -> AsyncSession:
+        return async_object_session(self)
 
     def update(self, **kwargs):
         for key, value in kwargs.items():
