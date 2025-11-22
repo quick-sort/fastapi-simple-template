@@ -1,28 +1,35 @@
 from __future__ import annotations
-from typing import Optional, TYPE_CHECKING, ClassVar
-import enum
+
 import asyncio
+import enum
+from typing import TYPE_CHECKING, ClassVar, Optional
+
 from authlib.integrations.starlette_client import OAuth
-from sqlalchemy.orm import Mapped, mapped_column, relationship
-from sqlalchemy import String, JSON, ForeignKey, func, Text, UniqueConstraint, Boolean, ARRAY, Enum, Integer
+from sqlalchemy import JSON, Enum, String
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import Mapped, mapped_column, relationship
+
 from .base import Base
 from .external_user import ExternalUser
 
 if TYPE_CHECKING:
     from .external_user import ExternalUser
 
+
 class ProviderType(enum.StrEnum):
-    oauth1 = 'oauth1'
-    oauth2 = 'oauth2'
-    oidc = 'oidc'
+    oauth1 = "oauth1"
+    oauth2 = "oauth2"
+    oidc = "oidc"
+
 
 class OauthProvider(Base):
     _auth_registry: ClassVar[Optional[OAuth]] = None
     _auth_registry_lock: ClassVar[asyncio.Lock] = asyncio.Lock()
 
-    name: Mapped[str] = mapped_column(String, default='oauth', unique=True)
-    provider_type: Mapped[ProviderType] = mapped_column(Enum(ProviderType), default=ProviderType.oauth2)
+    name: Mapped[str] = mapped_column(String, default="oauth", unique=True)
+    provider_type: Mapped[ProviderType] = mapped_column(
+        Enum(ProviderType), default=ProviderType.oauth2
+    )
     client_id: Mapped[str] = mapped_column(String)
     client_secret: Mapped[str] = mapped_column(String)
     server_metadata_url: Mapped[Optional[str]] = mapped_column(String)
@@ -38,17 +45,20 @@ class OauthProvider(Base):
     refresh_token_params: Mapped[dict] = mapped_column(JSON, default={})
     redirect_uri: Mapped[str] = mapped_column(String)
     client_kwargs: Mapped[dict] = mapped_column(JSON, default={})
-    external_users: Mapped[list[ExternalUser]] = relationship(back_populates='oauth_provider')
+    username_field: Mapped[str] = mapped_column(String, default="username")
+    external_users: Mapped[list[ExternalUser]] = relationship(
+        back_populates="oauth_provider"
+    )
 
     @classmethod
-    async def get_auth_registry(cls, async_session:AsyncSession) -> OAuth:
+    async def get_auth_registry(cls, async_session: AsyncSession) -> OAuth:
         if cls._auth_registry:
             return cls._auth_registry
         async with cls._auth_registry_lock:
             if cls._auth_registry:
                 return cls._auth_registry
             authlib_registry = OAuth()
-            providers:list[OauthProvider] = await cls.find(async_session)
+            providers: list[OauthProvider] = await cls.find(async_session)
             for provider in providers:
                 if provider.provider_type == ProviderType.oauth1:
                     authlib_registry.register(

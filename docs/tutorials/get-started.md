@@ -16,14 +16,14 @@ git commit -m 'init commit'
 Install following softwares:
 
 - [Python3.12](https://www.python.org/downloads/)
-- [Poetry](https://python-poetry.org/docs/#installation)
+- [uv](https://python-uv.org/docs/#installation)
 - [PostgreSQL](https://www.postgresql.org/download/)
 
 ## Install Project Dependencies
 
 ```bash
-poetry env use 3.12
-poetry install
+uv env use 3.12
+uv install
 ```
 
 ## Init Database
@@ -55,19 +55,19 @@ EOF
 ### Create Tables in Database
 
 ```bash
-poetry run alembic upgrade head
+uv run alembic upgrade head
 ```
 
 ## Start Service in Dev mode
 
 ```bash
-poetry run uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+uv run uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
 ```
 
 ## Start Service in Production mode
 recommend using docker deployment method.
 ```bash
-poetry run uvicorn app.main:app --host 0.0.0.0 --port 8000
+uv run uvicorn app.main:app --host 0.0.0.0 --port 8000
 ```
 
 ## Check Service Running

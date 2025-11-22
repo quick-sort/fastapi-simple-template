@@ -14,7 +14,7 @@ async def test_registry(client: AsyncClient):
 
     resp = await client.post(
         "/api/v1/auth/registry",
-        json={"username": "new_user", "password": "test", "email": "email@email.com"},
+        json={"username": "new_user", "password": "test"},
     )
     assert resp.status_code == 200, "registry failed"
 

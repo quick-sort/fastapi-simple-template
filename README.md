@@ -24,7 +24,7 @@ use mkdocs serving documentation
 - [**FastAPI**](https://fastapi.tiangolo.com) base service framework.
 - [**SQLAlchemy**](https://www.sqlalchemy.org) for the Python SQL database interactions (ORM).
 - [PostgreSQL](https://www.postgresql.org) as the SQL database.
-- [**Poetry**](https://python-poetry.org) for managing Python project dependencies.
+- [**UV**](https://docs.astral.sh/uv/) for managing Python project dependencies.
 - [PyTest](https://docs.pytest.org/en/stable/) for unit test.
 - [PyLint](https://pylint.readthedocs.io/en/stable/) for static code analysis.
 - [Mkdocs Material](https://squidfunk.github.io/mkdocs-material/) generates clean and good looking document like FastAPI documents.

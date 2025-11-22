@@ -13,7 +13,6 @@ async def test_sub_transaction(db_session: AsyncSession):
     user = await User.create(
         async_session=db_session,
         username="test1",
-        email="test1@example.com",
         roles=[UserRole.user],
         password="test",
     )
@@ -28,7 +27,6 @@ async def test_crud_user(db_session: AsyncSession):
     user = await User.create(
         async_session=db_session,
         username="test2",
-        email="test2@example.com",
         roles=[UserRole.user],
         password="test",
     )

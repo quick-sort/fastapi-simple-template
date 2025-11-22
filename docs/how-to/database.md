@@ -31,27 +31,27 @@ SQLALCHEMY_URI=postgresql+asyncpg://fastapi:fastapi@localhost:5432/app
 ### Create Tables
 
 ```bash
-poetry run alembic upgrade head
+uv run alembic upgrade head
 ```
 
 ### View Schema Change History
 
 To show all revisions
 ```bash
-poetry run alembic history
+uv run alembic history
 ```
 
 ### Uprade Table Schema
 
 To generate a new revision
 ```bash
-poetry run alembic revision --autogenerate -m "Added New table"
-poetry run alembic upgrade head
+uv run alembic revision --autogenerate -m "Added New table"
+uv run alembic upgrade head
 ```
 
 ### Downgrade Table Schema
 
 To rollback to brand new
 ```bash
-poetry run alembic downgrade base
+uv run alembic downgrade base
 ```

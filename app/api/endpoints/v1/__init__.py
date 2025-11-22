@@ -1,23 +1,25 @@
-
 from fastapi import APIRouter
+
+from . import api_key, auth, health, oauth, oauth_providers, users
+
 router = APIRouter()
 
-from . import auth
-router.include_router(auth.router, prefix='/auth', tags=['authentication'])
 
-from . import users
-router.include_router(users.router, prefix='/users', tags=['users'])
+router.include_router(auth.router, prefix="/auth")
 
-from . import health
-router.include_router(health.router, prefix='/health', tags=['health'])
 
-from . import api_key
-router.include_router(api_key.router, prefix='/api_keys', tags=['api_keys'])
+router.include_router(users.router, prefix="/users")
 
-from . import oauth_providers
-router.include_router(oauth_providers.router, prefix='/oauth/providers', tags=['oauth providers'])
 
-from . import oauth
-router.include_router(oauth.router, prefix='/oauth', tags=['oauth'])
+router.include_router(health.router, prefix="/health")
 
-__all__ = ['router']
+
+router.include_router(api_key.router, prefix="/api_keys")
+
+
+router.include_router(oauth_providers.router, prefix="/oauth_providers")
+
+
+router.include_router(oauth.router, prefix="/oauth")
+
+__all__ = ["router"]

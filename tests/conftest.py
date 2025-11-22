@@ -17,7 +17,6 @@ def mock_admin():
     admin = "admin"
     return User(
         username=admin,
-        email="admin@admin.com",
         password=hash_password(admin),
         roles=[UserRole.admin],
     )
@@ -28,7 +27,6 @@ def mock_user():
     user = "user"
     return User(
         username=user,
-        email="user@example.com",
         password=hash_password(user),
         roles=[UserRole.user],
     )

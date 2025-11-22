@@ -3,5 +3,5 @@
 ## How to view docs
 
 ```bash
-poetry run mkdocs serve
+uv run mkdocs serve
 ```

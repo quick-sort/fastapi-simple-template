@@ -33,7 +33,6 @@ def scopefunction() -> any:
 
 ASYNC_ENGINE = create_async_engine(
     str(settings.SQLALCHEMY_URI),
-    # echo=True,
     poolclass=NullPool,
 )
 ASYNC_DB_SESSION: AsyncSession = async_scoped_session(

@@ -33,7 +33,6 @@ async def test_base_functions(
     obj = await User.create(
         db_session,
         username="Async Collector",
-        email="async_collector@example.com",
         roles=[UserRole.user],
         password="test",
     )

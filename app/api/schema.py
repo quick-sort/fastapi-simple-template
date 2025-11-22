@@ -3,7 +3,6 @@ from typing import Any, Generic, Literal, Optional, TypeVar
 from pydantic import (
     BaseModel,
     ConfigDict,
-    EmailStr,
     Field,
     FieldSerializationInfo,
     HttpUrl,
@@ -16,6 +15,7 @@ from app.db.models.user import UserRole
 
 class JWTToken(BaseModel):
     user_id: int
+    username: str
     scopes: list[str]
 
 
@@ -40,29 +40,6 @@ class PageList(BaseModel, Generic[T]):
     limit: int
 
 
-class UpdateOAuthProviderParams(BaseModel):
-    name: Optional[str] = Field(pattern=r"[A-Za-z_\-0-9]+", default=None)
-    provider_type: Optional[str] = Field(pattern=r"[A-Za-z_\-0-9]+", default=None)
-    client_id: Optional[str] = Field(pattern=r"[A-Za-z_\-0-9]+", default=None)
-    client_secret: Optional[str] = Field(default=None)
-    login_url: Optional[HttpUrl] = Field(default=None)
-    verify_url: Optional[HttpUrl] = Field(default=None)
-    access_token_url: Optional[HttpUrl] = Field(default=None)
-    refresh_token_url: Optional[HttpUrl] = Field(default=None)
-    callback_url: Optional[HttpUrl] = Field(default=None)
-    scope: Optional[list[str]] = Field(default=[])
-
-    @field_serializer(
-        "login_url",
-        "verify_url",
-        "access_token_url",
-        "refresh_token_url",
-        "callback_url",
-    )
-    def url_to_str(self, value: Any, info: FieldSerializationInfo) -> str:
-        return str(value)
-
-
 class BaseOAuthProvider(BaseModel):
     name: str = Field(pattern=r"[A-Za-z_\-0-9]+")
     provider_type: ProviderType
@@ -80,6 +57,7 @@ class BaseOAuthProvider(BaseModel):
     userinfo_url: Optional[HttpUrl] = Field(default=None)
     redirect_uri: HttpUrl
     client_kwargs: Optional[dict] = Field(default={})
+    username_field: Optional[str] = Field(default="username")
 
     @field_serializer(
         "server_metadata_url",
@@ -99,6 +77,30 @@ class BaseOAuthProvider(BaseModel):
 
 class CreateOAuthProviderParams(BaseOAuthProvider):
     client_secret: str
+
+
+class UpdateOAuthProviderParams(BaseModel):
+    name: Optional[str] = Field(pattern=r"[A-Za-z_\-0-9]+", default=None)
+    provider_type: Optional[str] = Field(pattern=r"[A-Za-z_\-0-9]+", default=None)
+    client_id: Optional[str] = Field(pattern=r"[A-Za-z_\-0-9]+", default=None)
+    client_secret: Optional[str] = Field(default=None)
+    login_url: Optional[HttpUrl] = Field(default=None)
+    verify_url: Optional[HttpUrl] = Field(default=None)
+    access_token_url: Optional[HttpUrl] = Field(default=None)
+    refresh_token_url: Optional[HttpUrl] = Field(default=None)
+    callback_url: Optional[HttpUrl] = Field(default=None)
+    scope: Optional[list[str]] = Field(default=[])
+    username_field: Optional[str] = Field(default=None)
+
+    @field_serializer(
+        "login_url",
+        "verify_url",
+        "access_token_url",
+        "refresh_token_url",
+        "callback_url",
+    )
+    def url_to_str(self, value: Any, info: FieldSerializationInfo) -> str:
+        return str(value)
 
 
 class OAuthProvider(BaseOAuthProvider):
@@ -140,11 +142,10 @@ class ChangePasswordParams(BaseModel):
 
 
 class CreateUserParams(LoginParams):
-    email: EmailStr
+    pass
 
 
 class User(BaseModel):
     id: int
     username: str
     roles: list[UserRole]
-    email: EmailStr

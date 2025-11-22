@@ -11,7 +11,7 @@ This is a backend api service template based on python stack.
 - [Authlib](https://authlib.org) for oauth support.
 
 ### Development Env
-- [Poetry](https://python-poetry.org) for managing Python project dependencies.
+- [UV](https://docs.astral.sh/uv/) for managing Python project dependencies.
 - [PyTest](https://docs.pytest.org/en/stable/) for unit test.
 - [PyLint](https://pylint.readthedocs.io/en/stable/) for static code analysis.
 - [Mkdocs Material](https://squidfunk.github.io/mkdocs-material/) generates clean and good looking document like FastAPI documents.

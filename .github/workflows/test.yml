@@ -41,24 +41,23 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Install poetry
-        uses: abatilo/actions-poetry@v4
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
 
       - uses: actions/cache@v3
         name: Define a cache for the virtual environment based on the dependencies lock file
         with:
           path: ./.venv
-          key: venv-${{ hashFiles('poetry.lock') }}
+          key: venv-${{ hashFiles('uv.lock') }}
 
       - name: Install the project dependencies
-        run: poetry install
+        run: uv sync
 
       - name: Test Against PostgreSQL
         # Runs a script that creates a PostgreSQL table, populates
         # the table with data, and then retrieves the data
         run: |
-          poetry run alembic upgrade head
-          poetry run pytest -v
+          uv run pytest -v
         # Environment variables used by the `client.js` script to create
         # a new PostgreSQL table.
         env:

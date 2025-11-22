@@ -32,8 +32,7 @@ class User(Base, BaseUser):
     roles: Mapped[list[UserRole]] = mapped_column(
         ARRAY(Enum(UserRole)), default=[UserRole.user]
     )
-    email: Mapped[str] = mapped_column(String, unique=True)
-    password: Mapped[str] = mapped_column(String, nullable=False)
+    password: Mapped[str] = mapped_column(String, nullable=True)
     state: Mapped[UserState] = mapped_column(Enum(UserState), default=UserState.active)
     api_keys: Mapped[list[APIKey]] = relationship(back_populates="user")
     external_users: Mapped[list[ExternalUser]] = relationship(back_populates="user")
@@ -43,14 +42,12 @@ class User(Base, BaseUser):
         cls,
         async_session: AsyncSession,
         username: str,
-        email: str,
         password: str,
         roles: list[UserRole] = [UserRole.user],
     ) -> User:
         return await super().create(
             async_session=async_session,
             username=username,
-            email=email,
             password=hash_password(password),
             roles=roles,
         )
