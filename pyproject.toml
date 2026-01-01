@@ -23,6 +23,7 @@ dev = [
     "mkdocs-material>=9.7.0",
     "pytest-asyncio>=1.3.0",
     "pytest-cov>=7.0.0",
+    "pytest-env>=1.2.0",
 ]
 [[tool.uv.index]]
 url = "https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple"
@@ -33,3 +34,6 @@ log_cli = 1
 log_cli_level = 'info'
 asyncio_mode = 'auto'
 addopts = "--cov=app --cov-report html:cover"
+
+[tool.pytest_env]
+ENV_FILE = ".env.test"
